@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>30-Day Aesthetic Fitness Tracker</title>
+  <title>Daily Workout Routine Tracker</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -24,9 +24,10 @@
     p.subtitle { font-size: 0.875rem; color: var(--text-muted); }
     .date-badge { font-size: 0.8rem; color: var(--accent); background: rgba(56, 189, 248, 0.1); border: 1px solid var(--accent); padding: 0.25rem 0.75rem; border-radius: 12px; display: inline-block; margin-top: 0.5rem; font-weight: 600; }
 
-    .nav-weeks { display: flex; gap: 0.5rem; margin-bottom: 1rem; overflow-x: auto; padding-bottom: 0.5rem; }
-    .nav-weeks button { flex: 1; min-width: 70px; padding: 0.5rem; background: var(--card-bg); border: 1px solid var(--border); color: var(--text); border-radius: 8px; cursor: pointer; font-weight: 600; position: relative; }
+    .nav-weeks { display: flex; gap: 0.5rem; margin-bottom: 1rem; overflow-x: auto; padding-bottom: 0.5rem; align-items: center; }
+    .nav-weeks button { flex: 1; min-width: 65px; padding: 0.5rem; background: var(--card-bg); border: 1px solid var(--border); color: var(--text); border-radius: 8px; cursor: pointer; font-weight: 600; position: relative; }
     .nav-weeks button.active { background: var(--accent); color: #000; border-color: var(--accent); }
+    .btn-guide { background: rgba(56, 189, 248, 0.15) !important; color: var(--accent) !important; border: 1px solid var(--accent) !important; min-width: 110px !important; }
 
     .nav-days { display: flex; gap: 0.35rem; margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 0.5rem; }
     .nav-days button { flex: 1; min-width: 45px; padding: 0.5rem 0.25rem; background: var(--card-bg); border: 1px solid var(--border); color: var(--text); border-radius: 6px; cursor: pointer; font-size: 0.8rem; text-align: center; }
@@ -39,25 +40,35 @@
 
     .checklist-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
     .checklist-item:last-child { border-bottom: none; }
-    .checklist-item input[type="checkbox"] { width: 1.2rem; height: 1.2rem; accent-color: var(--accent); cursor: pointer; }
+    .checklist-item input[type="checkbox"] { width: 1.3rem; height: 1.3rem; accent-color: var(--accent); cursor: pointer; }
     .checklist-item label { font-size: 0.95rem; cursor: pointer; flex: 1; }
 
     .exercise-block { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
     .exercise-header { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem; color: var(--accent); display: flex; justify-content: space-between; }
     .target-hint { font-size: 0.75rem; color: var(--text-muted); font-weight: normal; }
     .sets-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-bottom: 0.75rem; margin-top: 0.5rem; }
-    .set-box { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem; text-align: center; }
+    .set-box { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem 0.25rem; text-align: center; }
     .set-box label { display: block; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.25rem; }
-    .set-box input { width: 100%; background: transparent; border: none; color: var(--text); text-align: center; font-size: 0.9rem; font-weight: bold; }
-    .set-box input:focus { outline: none; border-bottom: 1px solid var(--accent); }
+    .set-box select { width: 100%; background: var(--card-bg); border: 1px solid var(--border); color: var(--text); text-align: center; font-size: 0.9rem; font-weight: bold; border-radius: 4px; padding: 0.25rem 0; cursor: pointer; }
+    .set-box select:focus { outline: none; border-color: var(--accent); }
 
     .btn-reset { width: 100%; padding: 0.75rem; background: transparent; border: 1px solid #ef4444; color: #ef4444; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 2rem; }
+
+    /* Modal / Overlay Guide Styles */
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; padding: 1rem; overflow-y: auto; }
+    .modal-content { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; max-width: 550px; margin: 1rem auto; position: relative; }
+    .modal-close { position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
+    .guide-item { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+    .guide-item:last-child { border-bottom: none; margin-bottom: 0; }
+    .guide-title { font-size: 1.1rem; color: var(--accent); font-weight: bold; margin-bottom: 0.25rem; }
+    .guide-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem; line-height: 1.4; }
+    .guide-svg { width: 100%; max-height: 140px; background: #0f172a; border-radius: 8px; padding: 0.5rem; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>Aesthetic 30-Day Tracker</h1>
+    <h1>Daily Workout Routine Tracker</h1>
     <p class="subtitle">30-Min Daily Circuit + Walk + Recovery</p>
     <div class="date-badge" id="dateBadge">Today: Loading...</div>
   </header>
@@ -73,41 +84,116 @@
 
   <button class="btn-reset" onclick="resetAllData()">Reset All Progress</button>
 
+  <!-- Exercise Guide Modal -->
+  <div class="modal-overlay" id="guideModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="toggleModal(false)">&times;</button>
+      <h2 style="color: var(--accent); margin-bottom: 1rem;">Exercise Form Guide</h2>
+
+      <!-- Pull Ups -->
+      <div class="guide-item">
+        <div class="guide-title">1. Pull-Ups / Chin-Ups</div>
+        <div class="guide-desc"><b>Target:</b> Lats & Biceps. Drive your elbows down toward your hips. Overhand grip hits upper back; underhand grip (chin-ups) hits biceps more.</div>
+        <div class="guide-svg">
+          <svg viewBox="0 0 200 120" width="100%" height="120">
+            <line x1="20" y1="15" x2="180" y2="15" stroke="#94a3b8" stroke-width="6" />
+            <circle cx="100" cy="35" r="10" fill="#38bdf8" />
+            <line x1="100" y1="45" x2="100" y2="80" stroke="#38bdf8" stroke-width="5" />
+            <line x1="100" y1="50" x2="70" y2="15" stroke="#38bdf8" stroke-width="4" />
+            <line x1="100" y1="50" x2="130" y2="15" stroke="#38bdf8" stroke-width="4" />
+            <line x1="100" y1="80" x2="85" y2="110" stroke="#38bdf8" stroke-width="4" />
+            <line x1="100" y1="80" x2="115" y2="110" stroke="#38bdf8" stroke-width="4" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Dips -->
+      <div class="guide-item">
+        <div class="guide-title">2. Chest Dips</div>
+        <div class="guide-desc"><b>Target:</b> Lower Chest & Triceps. Lean slightly forward (~20°) to target chest. Lower until upper arms are parallel to the floor (90° bend).</div>
+        <div class="guide-svg">
+          <svg viewBox="0 0 200 120" width="100%" height="120">
+            <line x1="50" y1="60" x2="50" y2="110" stroke="#94a3b8" stroke-width="6" />
+            <line x1="150" y1="60" x2="150" y2="110" stroke="#94a3b8" stroke-width="6" />
+            <circle cx="100" cy="25" r="10" fill="#38bdf8" />
+            <line x1="100" y1="35" x2="90" y2="70" stroke="#38bdf8" stroke-width="5" />
+            <polyline points="90,45 60,50 50,60" fill="none" stroke="#38bdf8" stroke-width="4" />
+            <polyline points="90,45 120,50 150,60" fill="none" stroke="#38bdf8" stroke-width="4" />
+            <line x1="90" y1="70" x2="80" y2="105" stroke="#38bdf8" stroke-width="4" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Push Ups -->
+      <div class="guide-item">
+        <div class="guide-title">3. Push-Ups</div>
+        <div class="guide-desc"><b>Target:</b> Mid Chest & Core. Keep a rigid plank position. Elevate hands on dip station base for a deeper chest stretch.</div>
+        <div class="guide-svg">
+          <svg viewBox="0 0 200 120" width="100%" height="120">
+            <circle cx="160" cy="45" r="10" fill="#38bdf8" />
+            <line x1="160" y1="55" x2="70" y2="70" stroke="#38bdf8" stroke-width="5" />
+            <line x1="140" y1="58" x2="140" y2="90" stroke="#38bdf8" stroke-width="4" />
+            <line x1="70" y1="70" x2="30" y2="90" stroke="#38bdf8" stroke-width="4" />
+            <line x1="20" y1="90" x2="180" y2="90" stroke="#94a3b8" stroke-width="4" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Lateral Raises -->
+      <div class="guide-item">
+        <div class="guide-title">4. DB Lateral Raises</div>
+        <div class="guide-desc"><b>Target:</b> Side Shoulders (Width). Raise 8 lb dumbbells outward with elbows slightly bent. Take 3 seconds to lower for maximum burn.</div>
+        <div class="guide-svg">
+          <svg viewBox="0 0 200 120" width="100%" height="120">
+            <circle cx="100" cy="25" r="10" fill="#38bdf8" />
+            <line x1="100" y1="35" x2="100" y2="80" stroke="#38bdf8" stroke-width="5" />
+            <polyline points="30,50 100,45 170,50" fill="none" stroke="#38bdf8" stroke-width="4" />
+            <circle cx="25" cy="50" r="6" fill="#22c55e" />
+            <circle cx="175" cy="50" r="6" fill="#22c55e" />
+            <line x1="100" y1="80" x2="85" y2="115" stroke="#38bdf8" stroke-width="4" />
+            <line x1="100" y1="80" x2="115" y2="115" stroke="#38bdf8" stroke-width="4" />
+          </svg>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <script>
     const workoutData = {
       Mon: { name: "Dip Focus", effort: "High Effort (1 RIR)", moves: [
-        { name: "Pull-Ups (Banded)", target: "Aim for 5–8 reps" },
-        { name: "Dips (Banded)", target: "Aim for 5–8 reps" },
-        { name: "DB Lateral Raises (8 lb)", target: "Aim for 15–25 reps" },
-        { name: "Hanging Leg Raises", target: "Aim for 8–12 reps" }
+        { name: "Pull-Ups (Banded)", target: "Aim for 5–8 reps", max: 30 },
+        { name: "Dips (Banded)", target: "Aim for 5–8 reps", max: 30 },
+        { name: "DB Lateral Raises (8 lb)", target: "Aim for 15–25 reps", max: 30 },
+        { name: "Hanging Leg Raises", target: "Aim for 8–12 reps", max: 30 }
       ]},
       Tue: { name: "Push-Up Focus", effort: "High Effort (1 RIR)", moves: [
-        { name: "Chin-Ups (Banded)", target: "Aim for 5–8 reps" },
-        { name: "Deficit Push-Ups", target: "Aim for 8–15 reps" },
-        { name: "DB Rear Delt Flyes (8 lb)", target: "Aim for 15–25 reps" },
-        { name: "Plank Hold", target: "Aim for 45–60 secs" }
+        { name: "Chin-Ups (Banded)", target: "Aim for 5–8 reps", max: 30 },
+        { name: "Deficit Push-Ups", target: "Aim for 8–15 reps", max: 30 },
+        { name: "DB Rear Delt Flyes (8 lb)", target: "Aim for 15–25 reps", max: 30 },
+        { name: "Plank Hold", target: "Aim for 45–60 secs", max: 90, step: 5 }
       ]},
       Wed: { name: "Form & Squeeze", effort: "Medium Effort", moves: [
-        { name: "Pull-Ups (Banded)", target: "Aim for 5–8 smooth reps" },
-        { name: "Push-Ups", target: "Aim for 8–12 smooth reps" },
-        { name: "DB Lateral Raises (8 lb)", target: "Aim for 15–20 slow reps" },
-        { name: "Hanging Leg Raises", target: "Aim for 8–10 smooth reps" }
+        { name: "Pull-Ups (Banded)", target: "Aim for 5–8 smooth reps", max: 30 },
+        { name: "Push-Ups", target: "Aim for 8–12 smooth reps", max: 30 },
+        { name: "DB Lateral Raises (8 lb)", target: "Aim for 15–20 slow reps", max: 30 },
+        { name: "Hanging Leg Raises", target: "Aim for 8–10 smooth reps", max: 30 }
       ]},
       Thu: { name: "Dip Focus", effort: "High Effort (1 RIR)", moves: [
-        { name: "Pull-Ups (Banded)", target: "Aim for 5–8 reps" },
-        { name: "Dips (Banded)", target: "Aim for 5–8 reps" },
-        { name: "DB Lateral Raises (8 lb)", target: "Aim for 15–25 reps" },
-        { name: "Hanging Leg Raises", target: "Aim for 8–12 reps" }
+        { name: "Pull-Ups (Banded)", target: "Aim for 5–8 reps", max: 30 },
+        { name: "Dips (Banded)", target: "Aim for 5–8 reps", max: 30 },
+        { name: "DB Lateral Raises (8 lb)", target: "Aim for 15–25 reps", max: 30 },
+        { name: "Hanging Leg Raises", target: "Aim for 8–12 reps", max: 30 }
       ]},
       Fri: { name: "Push-Up Focus", effort: "High Effort (1 RIR)", moves: [
-        { name: "Chin-Ups (Banded)", target: "Aim for 5–8 reps" },
-        { name: "Deficit Push-Ups", target: "Aim for 8–15 reps" },
-        { name: "DB Rear Delt Flyes (8 lb)", target: "Aim for 15–25 reps" },
-        { name: "Plank Hold", target: "Aim for 45–60 secs" }
+        { name: "Chin-Ups (Banded)", target: "Aim for 5–8 reps", max: 30 },
+        { name: "Deficit Push-Ups", target: "Aim for 8–15 reps", max: 30 },
+        { name: "DB Rear Delt Flyes (8 lb)", target: "Aim for 15–25 reps", max: 30 },
+        { name: "Plank Hold", target: "Aim for 45–60 secs", max: 90, step: 5 }
       ]},
       Sat: { name: "Active Light Reset", effort: "Light Effort", moves: [
-        { name: "Light Push-Ups", target: "Aim for 8–10 easy reps" },
-        { name: "Light Bodyweight Move", target: "Aim for 8–10 easy reps" }
+        { name: "Light Push-Ups", target: "Aim for 8–10 easy reps", max: 30 },
+        { name: "Light Bodyweight Move", target: "Aim for 8–10 easy reps", max: 30 }
       ]},
       Sun: { name: "Rest & Recovery", effort: "Rest Day", moves: [] }
     };
@@ -151,6 +237,17 @@
         btn.onclick = () => { currentWeek = i; renderWeekNav(); renderWorkout(); };
         container.appendChild(btn);
       }
+      
+      // Add Info Guide Button right next to Week 4
+      const guideBtn = document.createElement("button");
+      guideBtn.innerText = "Exercise Guide 📖";
+      guideBtn.className = "btn-guide";
+      guideBtn.onclick = () => toggleModal(true);
+      container.appendChild(guideBtn);
+    }
+
+    function toggleModal(show) {
+      document.getElementById("guideModal").style.display = show ? "block" : "none";
     }
 
     function renderDayNav() {
@@ -219,11 +316,22 @@
           `;
           for (let setNum = 1; setNum <= 4; setNum++) {
             const setKey = getKey(`m${mIdx}_s${setNum}`);
-            const val = localStorage.getItem(setKey) || "";
+            const val = localStorage.getItem(setKey) || "0";
+            
+            const max = move.max || 30;
+            const step = move.step || 1;
+
+            let optionsHtml = `<option value="0" ${val === "0" ? "selected" : ""}>-</option>`;
+            for (let i = step; i <= max; i += step) {
+              optionsHtml += `<option value="${i}" ${val == i ? "selected" : ""}>${i}</option>`;
+            }
+
             html += `
               <div class="set-box">
                 <label>SET ${setNum}</label>
-                <input type="number" placeholder="0" value="${val}" onchange="saveVal('${setKey}', this.value)">
+                <select onchange="saveVal('${setKey}', this.value)">
+                  ${optionsHtml}
+                </select>
               </div>
             `;
           }
