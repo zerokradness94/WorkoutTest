@@ -14,6 +14,7 @@
       --text-muted: #94a3b8;
       --border: #334155;
       --success: #22c55e;
+      --youtube: #ef4444;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
@@ -55,12 +56,15 @@
     .btn-reset { width: 100%; padding: 0.75rem; background: transparent; border: 1px solid #ef4444; color: #ef4444; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 2rem; }
 
     /* Modal / Overlay Guide Styles */
-    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; padding: 1rem; overflow-y: auto; }
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; padding: 1rem; overflow-y: auto; }
     .modal-content { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; max-width: 550px; margin: 1rem auto; position: relative; }
     .modal-close { position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
     .guide-item { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
     .guide-item:last-child { border-bottom: none; margin-bottom: 0; }
-    .guide-title { font-size: 1.1rem; color: var(--accent); font-weight: bold; margin-bottom: 0.25rem; }
+    .guide-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; }
+    .guide-title { font-size: 1.05rem; color: var(--accent); font-weight: bold; }
+    .yt-link { font-size: 0.75rem; color: #f8fafc; background: var(--youtube); padding: 0.25rem 0.5rem; border-radius: 6px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem; }
+    .yt-link:hover { opacity: 0.9; }
     .guide-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem; line-height: 1.4; }
     .guide-svg { width: 100%; max-height: 140px; background: #0f172a; border-radius: 8px; padding: 0.5rem; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); }
   </style>
@@ -88,11 +92,14 @@
   <div class="modal-overlay" id="guideModal">
     <div class="modal-content">
       <button class="modal-close" onclick="toggleModal(false)">&times;</button>
-      <h2 style="color: var(--accent); margin-bottom: 1rem;">Exercise Form Guide</h2>
+      <h2 style="color: var(--accent); margin-bottom: 1rem;">Complete Exercise Guide</h2>
 
       <!-- Pull Ups -->
       <div class="guide-item">
-        <div class="guide-title">1. Pull-Ups / Chin-Ups</div>
+        <div class="guide-header-row">
+          <div class="guide-title">1. Pull-Ups / Chin-Ups</div>
+          <a class="yt-link" href="https://www.youtube.com/results?search_query=proper+pull+up+form" target="_blank">Watch Tutorial ↗</a>
+        </div>
         <div class="guide-desc"><b>Target:</b> Lats & Biceps. Drive your elbows down toward your hips. Overhand grip hits upper back; underhand grip (chin-ups) hits biceps more.</div>
         <div class="guide-svg">
           <svg viewBox="0 0 200 120" width="100%" height="120">
@@ -109,7 +116,10 @@
 
       <!-- Dips -->
       <div class="guide-item">
-        <div class="guide-title">2. Chest Dips</div>
+        <div class="guide-header-row">
+          <div class="guide-title">2. Chest Dips</div>
+          <a class="yt-link" href="https://www.youtube.com/results?search_query=proper+chest+dip+form" target="_blank">Watch Tutorial ↗</a>
+        </div>
         <div class="guide-desc"><b>Target:</b> Lower Chest & Triceps. Lean slightly forward (~20°) to target chest. Lower until upper arms are parallel to the floor (90° bend).</div>
         <div class="guide-svg">
           <svg viewBox="0 0 200 120" width="100%" height="120">
@@ -126,7 +136,10 @@
 
       <!-- Push Ups -->
       <div class="guide-item">
-        <div class="guide-title">3. Push-Ups</div>
+        <div class="guide-header-row">
+          <div class="guide-title">3. Push-Ups</div>
+          <a class="yt-link" href="https://www.youtube.com/results?search_query=deficit+push+ups+form" target="_blank">Watch Tutorial ↗</a>
+        </div>
         <div class="guide-desc"><b>Target:</b> Mid Chest & Core. Keep a rigid plank position. Elevate hands on dip station base for a deeper chest stretch.</div>
         <div class="guide-svg">
           <svg viewBox="0 0 200 120" width="100%" height="120">
@@ -141,7 +154,10 @@
 
       <!-- Lateral Raises -->
       <div class="guide-item">
-        <div class="guide-title">4. DB Lateral Raises</div>
+        <div class="guide-header-row">
+          <div class="guide-title">4. DB Lateral Raises</div>
+          <a class="yt-link" href="https://www.youtube.com/results?search_query=dumbbell+lateral+raise+form" target="_blank">Watch Tutorial ↗</a>
+        </div>
         <div class="guide-desc"><b>Target:</b> Side Shoulders (Width). Raise 8 lb dumbbells outward with elbows slightly bent. Take 3 seconds to lower for maximum burn.</div>
         <div class="guide-svg">
           <svg viewBox="0 0 200 120" width="100%" height="120">
@@ -152,6 +168,62 @@
             <circle cx="175" cy="50" r="6" fill="#22c55e" />
             <line x1="100" y1="80" x2="85" y2="115" stroke="#38bdf8" stroke-width="4" />
             <line x1="100" y1="80" x2="115" y2="115" stroke="#38bdf8" stroke-width="4" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Rear Delt Flyes -->
+      <div class="guide-item">
+        <div class="guide-header-row">
+          <div class="guide-title">5. DB Rear Delt Flyes</div>
+          <a class="yt-link" href="https://www.youtube.com/results?search_query=rear+delt+fly+dumbbell+form" target="_blank">Watch Tutorial ↗</a>
+        </div>
+        <div class="guide-desc"><b>Target:</b> Rear Shoulders & Upper Back. Hinge forward at the hips. Raise 8 lb dumbbells wide to the sides, driving with your back elbows to fix posture.</div>
+        <div class="guide-svg">
+          <svg viewBox="0 0 200 120" width="100%" height="120">
+            <circle cx="150" cy="40" r="10" fill="#38bdf8" />
+            <line x1="150" y1="50" x2="100" y2="60" stroke="#38bdf8" stroke-width="5" />
+            <line x1="100" y1="60" x2="80" y2="105" stroke="#38bdf8" stroke-width="4" />
+            <polyline points="120,80 125,52 130,80" fill="none" stroke="#38bdf8" stroke-width="4" />
+            <circle cx="120" cy="85" r="5" fill="#22c55e" />
+            <circle cx="130" cy="85" r="5" fill="#22c55e" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Hanging Leg Raises -->
+      <div class="guide-item">
+        <div class="guide-header-row">
+          <div class="guide-title">6. Hanging Leg Raises</div>
+          <a class="yt-link" href="https://www.youtube.com/results?search_query=hanging+leg+raise+form" target="_blank">Watch Tutorial ↗</a>
+        </div>
+        <div class="guide-desc"><b>Target:</b> Lower Abs & Core. Hang from pull-up bar. Lift knees or legs upward smoothly without swinging. Tilt pelvis at top to contract abs.</div>
+        <div class="guide-svg">
+          <svg viewBox="0 0 200 120" width="100%" height="120">
+            <line x1="20" y1="15" x2="180" y2="15" stroke="#94a3b8" stroke-width="6" />
+            <circle cx="100" cy="35" r="10" fill="#38bdf8" />
+            <line x1="100" y1="45" x2="100" y2="75" stroke="#38bdf8" stroke-width="5" />
+            <line x1="100" y1="45" x2="80" y2="15" stroke="#38bdf8" stroke-width="4" />
+            <line x1="100" y1="45" x2="120" y2="15" stroke="#38bdf8" stroke-width="4" />
+            <polyline points="100,75 130,75 140,95" fill="none" stroke="#38bdf8" stroke-width="5" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Plank Hold -->
+      <div class="guide-item">
+        <div class="guide-header-row">
+          <div class="guide-title">7. Plank Hold</div>
+          <a class="yt-link" href="https://www.youtube.com/results?search_query=proper+plank+form" target="_blank">Watch Tutorial ↗</a>
+        </div>
+        <div class="guide-desc"><b>Target:</b> Full Core Stability. Rest on forearms and toes. Keep your body in a straight line from ears to ankles. Squeeze glutes and belly button.</div>
+        <div class="guide-svg">
+          <svg viewBox="0 0 200 120" width="100%" height="120">
+            <circle cx="160" cy="55" r="10" fill="#38bdf8" />
+            <line x1="160" y1="65" x2="50" y2="70" stroke="#38bdf8" stroke-width="5" />
+            <polyline points="150,65 150,90 165,90" fill="none" stroke="#38bdf8" stroke-width="4" />
+            <line x1="50" y1="70" x2="40" y2="90" stroke="#38bdf8" stroke-width="4" />
+            <line x1="20" y1="90" x2="180" y2="90" stroke="#94a3b8" stroke-width="4" />
           </svg>
         </div>
       </div>
@@ -238,7 +310,6 @@
         container.appendChild(btn);
       }
       
-      // Add Info Guide Button right next to Week 4
       const guideBtn = document.createElement("button");
       guideBtn.innerText = "Exercise Guide 📖";
       guideBtn.className = "btn-guide";
