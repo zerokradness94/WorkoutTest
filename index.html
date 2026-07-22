@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>30-Day Aesthetic Fitness Tracker</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --success: #22c55e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding: 1rem; max-width: 600px; margin: 0 auto; padding-bottom: 3rem; }
+    
+    header { text-align: center; margin-bottom: 1.5rem; padding-top: 1rem; }
+    h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 0.25rem; }
+    p.subtitle { font-size: 0.875rem; color: var(--text-muted); }
+
+    .nav-weeks { display: flex; gap: 0.5rem; margin-bottom: 1rem; overflow-x: auto; padding-bottom: 0.5rem; }
+    .nav-weeks button { flex: 1; min-width: 70px; padding: 0.5rem; background: var(--card-bg); border: 1px solid var(--border); color: var(--text); border-radius: 8px; cursor: pointer; font-weight: 600; }
+    .nav-weeks button.active { background: var(--accent); color: #000; border-color: var(--accent); }
+
+    .nav-days { display: flex; gap: 0.35rem; margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 0.5rem; }
+    .nav-days button { flex: 1; min-width: 45px; padding: 0.5rem 0.25rem; background: var(--card-bg); border: 1px solid var(--border); color: var(--text); border-radius: 6px; cursor: pointer; font-size: 0.8rem; text-align: center; }
+    .nav-days button.active { border-color: var(--accent); color: var(--accent); font-weight: bold; }
+
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
+    .card-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 0.25rem; display: flex; justify-content: space-between; align-items: center; }
+    .tag { font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: 4px; background: var(--border); color: var(--accent); }
+
+    .checklist-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+    .checklist-item:last-child { border-bottom: none; }
+    .checklist-item input[type="checkbox"] { width: 1.2rem; height: 1.2rem; accent-color: var(--accent); cursor: pointer; }
+    .checklist-item label { font-size: 0.95rem; cursor: pointer; flex: 1; }
+
+    .exercise-block { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+    .exercise-header { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--accent); }
+    .sets-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-bottom: 0.75rem; }
+    .set-box { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem; text-align: center; }
+    .set-box label { display: block; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.25rem; }
+    .set-box input { width: 100%; background: transparent; border: none; color: var(--text); text-align: center; font-size: 0.9rem; font-weight: bold; }
+    .set-box input:focus { outline: none; border-bottom: 1px solid var(--accent); }
+
+    .btn-reset { width: 100%; padding: 0.75rem; background: transparent; border: 1px solid #ef4444; color: #ef4444; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 2rem; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Aesthetic 30-Day Tracker</h1>
+    <p class="subtitle">30-Min Daily Circuit + Walk + Inversion</p>
+  </header>
+
+  <!-- Week Selection -->
+  <div class="nav-weeks" id="weekNav"></div>
+
+  <!-- Day Selection -->
+  <div class="nav-days" id="dayNav"></div>
+
+  <!-- Main Content Card -->
+  <div id="workoutContent"></div>
+
+  <button class="btn-reset" onclick="resetAllData()">Reset All Progress</button>
+
+  <script>
+    const workoutData = {
+      Mon: { name: "Dip Focus", effort: "High Effort (1 RIR)", moves: [
+        { name: "Pull-Ups (Banded)", unit: "reps" },
+        { name: "Dips (Banded)", unit: "reps" },
+        { name: "DB Lateral Raises (8 lb)", unit: "reps" },
+        { name: "Hanging Leg Raises", unit: "reps" }
+      ]},
+      Tue: { name: "Push-Up Focus", effort: "High Effort (1 RIR)", moves: [
+        { name: "Chin-Ups (Banded)", unit: "reps" },
+        { name: "Deficit Push-Ups", unit: "reps" },
+        { name: "DB Rear Delt Flyes (8 lb)", unit: "reps" },
+        { name: "Plank Hold", unit: "secs" }
+      ]},
+      Wed: { name: "Form & Squeeze", effort: "Medium Effort", moves: [
+        { name: "Pull-Ups (Banded)", unit: "reps" },
+        { name: "Push-Ups", unit: "reps" },
+        { name: "DB Lateral Raises (8 lb)", unit: "reps" },
+        { name: "Hanging Leg Raises", unit: "reps" }
+      ]},
+      Thu: { name: "Dip Focus", effort: "High Effort (1 RIR)", moves: [
+        { name: "Pull-Ups (Banded)", unit: "reps" },
+        { name: "Dips (Banded)", unit: "reps" },
+        { name: "DB Lateral Raises (8 lb)", unit: "reps" },
+        { name: "Hanging Leg Raises", unit: "reps" }
+      ]},
+      Fri: { name: "Push-Up Focus", effort: "High Effort (1 RIR)", moves: [
+        { name: "Chin-Ups (Banded)", unit: "reps" },
+        { name: "Deficit Push-Ups", unit: "reps" },
+        { name: "DB Rear Delt Flyes (8 lb)", unit: "reps" },
+        { name: "Plank Hold", unit: "secs" }
+      ]},
+      Sat: { name: "Active Light Reset", effort: "Light Effort", moves: [
+        { name: "Light Push-Ups", unit: "reps" },
+        { name: "Light Bodyweight Move", unit: "reps" }
+      ]},
+      Sun: { name: "Rest & Recovery", effort: "Rest Day", moves: [] }
+    };
+
+    const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    let currentWeek = 1;
+    let currentDay = "Mon";
+
+    function init() {
+      renderWeekNav();
+      renderDayNav();
+      renderWorkout();
+    }
+
+    function renderWeekNav() {
+      const container = document.getElementById("weekNav");
+      container.innerHTML = "";
+      for (let i = 1; i <= 4; i++) {
+        const btn = document.createElement("button");
+        btn.innerText = `Week ${i}`;
+        if (i === currentWeek) btn.classList.add("active");
+        btn.onclick = () => { currentWeek = i; renderWeekNav(); renderWorkout(); };
+        container.appendChild(btn);
+      }
+    }
+
+    function renderDayNav() {
+      const container = document.getElementById("dayNav");
+      container.innerHTML = "";
+      days.forEach(day => {
+        const btn = document.createElement("button");
+        btn.innerText = day;
+        if (day === currentDay) btn.classList.add("active");
+        btn.onclick = () => { currentDay = day; renderDayNav(); renderWorkout(); };
+        container.appendChild(btn);
+      });
+    }
+
+    function getKey(suffix) {
+      return `w${currentWeek}_${currentDay}_${suffix}`;
+    }
+
+    function renderWorkout() {
+      const container = document.getElementById("workoutContent");
+      const data = workoutData[currentDay];
+      
+      const walkKey = getKey("walk");
+      const invKey = getKey("inversion");
+      const isWalkChecked = localStorage.getItem(walkKey) === "true";
+      const isInvChecked = localStorage.getItem(invKey) === "true";
+
+      let html = `
+        <div class="card">
+          <div class="card-title">
+            <span>${data.name}</span>
+            <span class="tag">${data.effort}</span>
+          </div>
+          
+          <div class="checklist-item">
+            <input type="checkbox" id="walkCheck" ${isWalkChecked ? "checked" : ""} onchange="saveCheck('${walkKey}', this.checked)">
+            <label for="walkCheck">30-Minute Daily Walk</label>
+          </div>
+
+          <div class="checklist-item">
+            <input type="checkbox" id="invCheck" ${isInvChecked ? "checked" : ""} onchange="saveCheck('${invKey}', this.checked)">
+            <label for="invCheck">Inversion Table Decompression (3-5 mins)</label>
+          </div>
+        </div>
+      `;
+
+      if (data.moves.length > 0) {
+        html += `<div class="card"><div class="card-title">Circuit Exercises (3-4 Sets)</div>`;
+        data.moves.forEach((move, mIdx) => {
+          html += `
+            <div class="exercise-block">
+              <div class="exercise-header">${move.name}</div>
+              <div class="sets-grid">
+          `;
+          for (let setNum = 1; setNum <= 4; setNum++) {
+            const setKey = getKey(`m${mIdx}_s${setNum}`);
+            const val = localStorage.getItem(setKey) || "";
+            html += `
+              <div class="set-box">
+                <label>SET ${setNum}</label>
+                <input type="number" placeholder="0" value="${val}" onchange="saveVal('${setKey}', this.value)">
+              </div>
+            `;
+          }
+          html += `</div></div>`;
+        });
+        html += `</div>`;
+      }
+
+      container.innerHTML = html;
+    }
+
+    function saveCheck(key, isChecked) {
+      localStorage.setItem(key, isChecked);
+    }
+
+    function saveVal(key, val) {
+      localStorage.setItem(key, val);
+    }
+
+    function resetAllData() {
+      if (confirm("Are you sure you want to reset all tracked data?")) {
+        localStorage.clear();
+        renderWorkout();
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
