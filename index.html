@@ -546,9 +546,22 @@
       localStorage.setItem(key, val);
     }
 
+    /* Brave-friendly Reset Function */
     function resetAllData() {
       if (confirm("Are you sure you want to reset all tracked data?")) {
-        localStorage.clear();
+        // Iterate through all localStorage keys explicitly to bypass Shield restrictions
+        const keysToRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && key.startsWith("w")) {
+            keysToRemove.push(key);
+          }
+        }
+        keysToRemove.forEach(key => localStorage.removeItem(key));
+        
+        // Final fallback clear
+        try { localStorage.clear(); } catch(e) {}
+
         renderWorkout();
       }
     }
