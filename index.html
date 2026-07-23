@@ -50,7 +50,8 @@
     .exercise-block { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
     .exercise-header { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem; color: var(--accent); display: flex; justify-content: space-between; }
     .target-hint { font-size: 0.75rem; color: var(--text-muted); font-weight: normal; }
-    .sets-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-bottom: 0.75rem; margin-top: 0.5rem; }
+    
+    .sets-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 0.75rem; margin-top: 0.5rem; }
     .set-box { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem 0.25rem; text-align: center; }
     .set-box label { display: block; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.25rem; }
     .set-box select { width: 100%; background: var(--card-bg); border: 1px solid var(--border); color: var(--text); text-align: center; font-size: 0.9rem; font-weight: bold; border-radius: 4px; padding: 0.25rem 0; cursor: pointer; }
@@ -84,10 +85,8 @@
     .guide-item:last-child { border-bottom: none; margin-bottom: 0; }
     .guide-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; }
     .guide-title { font-size: 1.05rem; color: var(--accent); font-weight: bold; }
-    .yt-link { font-size: 0.75rem; color: #f8fafc; background: #0284c7; padding: 0.25rem 0.5rem; border-radius: 6px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem; }
     .guide-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem; line-height: 1.4; }
-    .guide-gif-container { width: 100%; border-radius: 8px; overflow: hidden; background: #0f172a; border: 1px solid var(--border); text-align: center; }
-    .guide-gif-container img { width: 100%; max-height: 220px; object-fit: contain; display: block; }
+    .guide-svg { width: 100%; max-height: 140px; background: #0f172a; border-radius: 8px; padding: 0.5rem; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); }
   </style>
 </head>
 <body>
@@ -152,11 +151,21 @@
       <div class="guide-item">
         <div class="guide-header-row">
           <div class="guide-title">1. Pull-Ups / Chin-Ups</div>
-          <a class="yt-link" href="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHc3ZXoxY3pncG5xeDF5dmN5YmxmNml4dWRscTRyd2syc2R6eWFkZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26BkN45f5aQJ57k9q/giphy.gif" target="_blank">View GIF ↗</a>
         </div>
         <div class="guide-desc"><b>Target:</b> Lats & Biceps. Drive your elbows down toward your hips. Overhand grip hits upper back; underhand grip (chin-ups) hits biceps more.</div>
-        <div class="guide-gif-container">
-          <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHc3ZXoxY3pncG5xeDF5dmN5YmxmNml4dWRscTRyd2syc2R6eWFkZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26BkN45f5aQJ57k9q/giphy.gif" alt="Pull Up Demonstration" />
+        <div class="guide-svg">
+          <svg viewBox="0 0 200 120" width="100%" height="120">
+            <line x1="20" y1="15" x2="180" y2="15" stroke="#94a3b8" stroke-width="6" />
+            <g>
+              <animateTransform attributeName="transform" type="translate" values="0,25; 0,0; 0,25" dur="2.5s" repeatCount="indefinite" />
+              <circle cx="100" cy="35" r="10" fill="#38bdf8" />
+              <line x1="100" y1="45" x2="100" y2="80" stroke="#38bdf8" stroke-width="5" />
+              <line x1="100" y1="50" x2="70" y2="15" stroke="#38bdf8" stroke-width="4" />
+              <line x1="100" y1="50" x2="130" y2="15" stroke="#38bdf8" stroke-width="4" />
+              <line x1="100" y1="80" x2="85" y2="110" stroke="#38bdf8" stroke-width="4" />
+              <line x1="100" y1="80" x2="115" y2="110" stroke="#38bdf8" stroke-width="4" />
+            </g>
+          </svg>
         </div>
       </div>
 
@@ -164,11 +173,21 @@
       <div class="guide-item">
         <div class="guide-header-row">
           <div class="guide-title">2. Chest Dips</div>
-          <a class="yt-link" href="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcWxua2QybTF3N3E5M28xY28wZXp3ZmFwOTZiaXJ0MWo5Ymg5cHRweSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l3vR78pM9HptVpQkM/giphy.gif" target="_blank">View GIF ↗</a>
         </div>
         <div class="guide-desc"><b>Target:</b> Lower Chest & Triceps. Lean slightly forward (~20°) to target chest. Lower until upper arms are parallel to the floor (90° bend).</div>
-        <div class="guide-gif-container">
-          <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcWxua2QybTF3N3E5M28xY28wZXp3ZmFwOTZiaXJ0MWo5Ymg5cHRweSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l3vR78pM9HptVpQkM/giphy.gif" alt="Dip Demonstration" />
+        <div class="guide-svg">
+          <svg viewBox="0 0 200 120" width="100%" height="120">
+            <line x1="50" y1="60" x2="50" y2="110" stroke="#94a3b8" stroke-width="6" />
+            <line x1="150" y1="60" x2="150" y2="110" stroke="#94a3b8" stroke-width="6" />
+            <g>
+              <animateTransform attributeName="transform" type="translate" values="0,0; 0,20; 0,0" dur="2.2s" repeatCount="indefinite" />
+              <circle cx="100" cy="25" r="10" fill="#38bdf8" />
+              <line x1="100" y1="35" x2="90" y2="70" stroke="#38bdf8" stroke-width="5" />
+              <polyline points="90,45 60,50 50,60" fill="none" stroke="#38bdf8" stroke-width="4" />
+              <polyline points="90,45 120,50 150,60" fill="none" stroke="#38bdf8" stroke-width="4" />
+              <line x1="90" y1="70" x2="80" y2="105" stroke="#38bdf8" stroke-width="4" />
+            </g>
+          </svg>
         </div>
       </div>
 
@@ -176,11 +195,19 @@
       <div class="guide-item">
         <div class="guide-header-row">
           <div class="guide-title">3. Deficit Push-Ups</div>
-          <a class="yt-link" href="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWZsdmt0ZDVpdms5YzlsZGxsNnIyb3F1NHp6MmdxMHFzeHp4aXFpNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7TKR1I7Sls0T3OqA/giphy.gif" target="_blank">View GIF ↗</a>
         </div>
         <div class="guide-desc"><b>Target:</b> Mid Chest & Core. Use push-up handles to elevate hands. Lower down until chest dips below handle level for a deeper chest stretch.</div>
-        <div class="guide-gif-container">
-          <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWZsdmt0ZDVpdms5YzlsZGxsNnIyb3F1NHp6MmdxMHFzeHp4aXFpNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7TKR1I7Sls0T3OqA/giphy.gif" alt="Push Up Demonstration" />
+        <div class="guide-svg">
+          <svg viewBox="0 0 200 120" width="100%" height="120">
+            <line x1="20" y1="90" x2="180" y2="90" stroke="#94a3b8" stroke-width="4" />
+            <g>
+              <animateTransform attributeName="transform" type="translate" values="0,0; 0,15; 0,0" dur="2s" repeatCount="indefinite" />
+              <circle cx="160" cy="45" r="10" fill="#38bdf8" />
+              <line x1="160" y1="55" x2="70" y2="70" stroke="#38bdf8" stroke-width="5" />
+              <line x1="140" y1="58" x2="140" y2="90" stroke="#38bdf8" stroke-width="4" />
+              <line x1="70" y1="70" x2="30" y2="90" stroke="#38bdf8" stroke-width="4" />
+            </g>
+          </svg>
         </div>
       </div>
 
@@ -188,11 +215,21 @@
       <div class="guide-item">
         <div class="guide-header-row">
           <div class="guide-title">4. DB Lateral Raises</div>
-          <a class="yt-link" href="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbzdrNDYycms1ZjI2MXA2azY2cnFmbmtscXdpMGlrcHJzMnAxbWttYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l3vQ_1e06O0Lz2Sze/giphy.gif" target="_blank">View GIF ↗</a>
         </div>
         <div class="guide-desc"><b>Target:</b> Side Shoulders (Width). Raise 8 lb dumbbells outward with elbows slightly bent. Take 3 seconds to lower for maximum burn.</div>
-        <div class="guide-gif-container">
-          <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbzdrNDYycms1ZjI2MXA2azY2cnFmbmtscXdpMGlrcHJzMnAxbWttYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l3vQ_1e06O0Lz2Sze/giphy.gif" alt="Lateral Raise Demonstration" />
+        <div class="guide-svg">
+          <svg viewBox="0 0 200 120" width="100%" height="120">
+            <circle cx="100" cy="25" r="10" fill="#38bdf8" />
+            <line x1="100" y1="35" x2="100" y2="80" stroke="#38bdf8" stroke-width="5" />
+            <line x1="100" y1="80" x2="85" y2="115" stroke="#38bdf8" stroke-width="4" />
+            <line x1="100" y1="80" x2="115" y2="115" stroke="#38bdf8" stroke-width="4" />
+            <g>
+              <animateTransform attributeName="transform" type="rotate" values="0 100 45; -30 100 45; 0 100 45" dur="2.5s" repeatCount="indefinite" />
+              <polyline points="30,75 100,45 170,75" fill="none" stroke="#38bdf8" stroke-width="4" />
+              <circle cx="25" cy="75" r="6" fill="#22c55e" />
+              <circle cx="175" cy="75" r="6" fill="#22c55e" />
+            </g>
+          </svg>
         </div>
       </div>
 
@@ -200,11 +237,20 @@
       <div class="guide-item">
         <div class="guide-header-row">
           <div class="guide-title">5. DB Rear Delt Flyes</div>
-          <a class="yt-link" href="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGcxOXNsdGF0N2tzZHRrMWtyNXZoZG16YmgxaWNtNm44MnpvcXQ1dCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0HlC2R1d3n00kS4M/giphy.gif" target="_blank">View GIF ↗</a>
         </div>
         <div class="guide-desc"><b>Target:</b> Rear Shoulders & Upper Back. Hinge forward at the hips. Raise 8 lb dumbbells wide to the sides, driving with your back elbows to fix posture.</div>
-        <div class="guide-gif-container">
-          <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGcxOXNsdGF0N2tzZHRrMWtyNXZoZG16YmgxaWNtNm44MnpvcXQ1dCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0HlC2R1d3n00kS4M/giphy.gif" alt="Rear Delt Fly Demonstration" />
+        <div class="guide-svg">
+          <svg viewBox="0 0 200 120" width="100%" height="120">
+            <circle cx="150" cy="40" r="10" fill="#38bdf8" />
+            <line x1="150" y1="50" x2="100" y2="60" stroke="#38bdf8" stroke-width="5" />
+            <line x1="100" y1="60" x2="80" y2="105" stroke="#38bdf8" stroke-width="4" />
+            <g>
+              <animateTransform attributeName="transform" type="translate" values="0,0; 0,-10; 0,0" dur="2s" repeatCount="indefinite" />
+              <polyline points="120,80 125,52 130,80" fill="none" stroke="#38bdf8" stroke-width="4" />
+              <circle cx="120" cy="85" r="5" fill="#22c55e" />
+              <circle cx="130" cy="85" r="5" fill="#22c55e" />
+            </g>
+          </svg>
         </div>
       </div>
 
@@ -212,11 +258,20 @@
       <div class="guide-item">
         <div class="guide-header-row">
           <div class="guide-title">6. Hanging Leg Raises</div>
-          <a class="yt-link" href="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpneXQ2azFzazRreHlnZnkwd3Y5ZGptYXpvdHRtYXltbXQ2Ynd1bCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oKIPcfqSbhZkgpM9W/giphy.gif" target="_blank">View GIF ↗</a>
         </div>
         <div class="guide-desc"><b>Target:</b> Lower Abs & Core. Hang from pull-up bar. Lift knees or legs upward smoothly without swinging. Tilt pelvis at top to contract abs.</div>
-        <div class="guide-gif-container">
-          <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpneXQ2azFzazRreHlnZnkwd3Y5ZGptYXpvdHRtYXltbXQ2Ynd1bCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oKIPcfqSbhZkgpM9W/giphy.gif" alt="Leg Raise Demonstration" />
+        <div class="guide-svg">
+          <svg viewBox="0 0 200 120" width="100%" height="120">
+            <line x1="20" y1="15" x2="180" y2="15" stroke="#94a3b8" stroke-width="6" />
+            <circle cx="100" cy="35" r="10" fill="#38bdf8" />
+            <line x1="100" y1="45" x2="100" y2="75" stroke="#38bdf8" stroke-width="5" />
+            <line x1="100" y1="45" x2="80" y2="15" stroke="#38bdf8" stroke-width="4" />
+            <line x1="100" y1="45" x2="120" y2="15" stroke="#38bdf8" stroke-width="4" />
+            <g>
+              <animateTransform attributeName="transform" type="rotate" values="0 100 75; -45 100 75; 0 100 75" dur="2.2s" repeatCount="indefinite" />
+              <polyline points="100,75 100,105 100,115" fill="none" stroke="#38bdf8" stroke-width="5" />
+            </g>
+          </svg>
         </div>
       </div>
 
@@ -224,11 +279,16 @@
       <div class="guide-item">
         <div class="guide-header-row">
           <div class="guide-title">7. Plank Hold</div>
-          <a class="yt-link" href="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGJxbzE4dTNucWFndHFlNDlpdDZkYWY5ZDJ0MHM3OGlsMmU3b3NxeSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xT8qB3xY9W09Qz96sE/giphy.gif" target="_blank">View GIF ↗</a>
         </div>
         <div class="guide-desc"><b>Target:</b> Full Core Stability. Rest on forearms and toes. Keep your body in a straight line from ears to ankles. Squeeze glutes and belly button.</div>
-        <div class="guide-gif-container">
-          <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGJxbzE4dTNucWFndHFlNDlpdDZkYWY5ZDJ0MHM3OGlsMmU3b3NxeSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xT8qB3xY9W09Qz96sE/giphy.gif" alt="Plank Hold Demonstration" />
+        <div class="guide-svg">
+          <svg viewBox="0 0 200 120" width="100%" height="120">
+            <line x1="20" y1="90" x2="180" y2="90" stroke="#94a3b8" stroke-width="4" />
+            <circle cx="160" cy="55" r="10" fill="#38bdf8" />
+            <line x1="160" y1="65" x2="50" y2="70" stroke="#38bdf8" stroke-width="5" />
+            <polyline points="150,65 150,90 165,90" fill="none" stroke="#38bdf8" stroke-width="4" />
+            <line x1="50" y1="70" x2="40" y2="90" stroke="#38bdf8" stroke-width="4" />
+          </svg>
         </div>
       </div>
 
@@ -418,7 +478,7 @@
 
           <div class="checklist-item">
             <input type="checkbox" id="flexCheck" ${isFlexChecked ? "checked" : ""} onchange="saveCheck('${flexKey}', this.checked)">
-            <label for="flexCheck">Minimalist Flexibility Program <a class="ext-link" href="https://www.youtube.com/watch?v=L_xrDAtykMI" target="_blank">YouTube ↗</a></label>
+            <label for="flexCheck">Minimalist Flexibility Program</label>
           </div>
 
           <div class="checklist-item">
@@ -449,7 +509,7 @@
               </div>
               <div class="sets-grid">
           `;
-          for (let setNum = 1; setNum <= 4; setNum++) {
+          for (let setNum = 1; setNum <= 3; setNum++) {
             const setKey = getKey(`m${mIdx}_s${setNum}`);
             const val = localStorage.getItem(setKey) || "0";
             
