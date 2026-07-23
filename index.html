@@ -128,7 +128,7 @@
     </div>
   </div>
 
-  <!-- Custom Reset Confirmation Modal (Replaces Native Confirm Popup) -->
+  <!-- Custom Reset Confirmation Modal -->
   <div class="modal-overlay" id="resetModal">
     <div class="modal-content" style="text-align: center; max-width: 400px; margin-top: 30vh;">
       <h3 style="color: #ef4444; margin-bottom: 0.5rem; font-size: 1.2rem;">⚠️ Reset All Progress?</h3>
@@ -362,11 +362,46 @@
     let todayWeek = 1;
     let todayDay = "Mon";
 
-    /* Rest Timer Script */
+    /* Audio Context Initialization for Mobile Audio Unlock */
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playBeep(freq, duration, delay = 0) {
+      if (!audioCtx) return;
+      setTimeout(() => {
+        try {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+          
+          gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          
+          osc.start();
+          osc.stop(audioCtx.currentTime + duration);
+        } catch(e) {}
+      }, delay);
+    }
+
+    /* Rest Timer Script with Mobile Audio Unlock */
     let timerInterval = null;
     let timeLeft = 0;
 
     function startTimer(seconds) {
+      initAudio(); // Unlock audio on user tap
+      
       clearInterval(timerInterval);
       timeLeft = seconds;
       updateTimerDisplay();
@@ -376,14 +411,11 @@
         if (timeLeft <= 0) {
           clearInterval(timerInterval);
           document.getElementById("timerDisplay").innerText = "TIME UP! 🎉";
-          try {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator();
-            osc.connect(ctx.destination);
-            osc.frequency.value = 880;
-            osc.start();
-            osc.stop(ctx.currentTime + 0.3);
-          } catch(e) {}
+          
+          // Sound Alert: 3 Crisp Beeps
+          playBeep(880, 0.15, 0);   // Beep 1
+          playBeep(880, 0.15, 200); // Beep 2
+          playBeep(1200, 0.4, 400);  // High Beep 3
         } else {
           updateTimerDisplay();
         }
@@ -453,11 +485,9 @@
     }
 
     function executeReset() {
-      // 1. Direct DOM reset
       document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
       document.querySelectorAll('select').forEach(sel => sel.value = "0");
 
-      // 2. Clear all key patterns explicitly
       days.forEach(d => {
         for (let w = 1; w <= 4; w++) {
           ['walk', 'jacks', 'flexibility', 'posture', 'inversion', 'massage'].forEach(item => {
@@ -471,10 +501,8 @@
         }
       });
 
-      // 3. Fallback wipe
       try { localStorage.clear(); } catch(e) {}
 
-      // 4. Close modal and update view
       closeResetModal();
       renderWorkout();
     }
