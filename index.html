@@ -539,29 +539,38 @@
     }
 
     function saveCheck(key, isChecked) {
-      localStorage.setItem(key, isChecked);
+      try { localStorage.setItem(key, isChecked); } catch(e) {}
     }
 
     function saveVal(key, val) {
-      localStorage.setItem(key, val);
+      try { localStorage.setItem(key, val); } catch(e) {}
     }
 
-    /* Brave-friendly Reset Function */
+    /* Mobile & Brave Shield Proof Reset */
     function resetAllData() {
       if (confirm("Are you sure you want to reset all tracked data?")) {
-        // Iterate through all localStorage keys explicitly to bypass Shield restrictions
-        const keysToRemove = [];
-        for (let i = 0; i < localStorage.length; i++) {
-          const key = localStorage.key(i);
-          if (key && key.startsWith("w")) {
-            keysToRemove.push(key);
+        // Direct DOM uncheck & reset first
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+        document.querySelectorAll('select').forEach(sel => sel.value = "0");
+
+        // Targeted key deletion
+        days.forEach(d => {
+          for (let w = 1; w <= 4; w++) {
+            ['walk', 'jacks', 'flexibility', 'posture', 'inversion', 'massage'].forEach(item => {
+              try { localStorage.removeItem(`w${w}_${d}_${item}`); } catch(e) {}
+            });
+            for (let m = 0; m < 4; m++) {
+              for (let s = 1; s <= 3; s++) {
+                try { localStorage.removeItem(`w${w}_${d}_m${m}_s${s}`); } catch(e) {}
+              }
+            }
           }
-        }
-        keysToRemove.forEach(key => localStorage.removeItem(key));
-        
-        // Final fallback clear
+        });
+
+        // Nuclear clear
         try { localStorage.clear(); } catch(e) {}
 
+        // Immediate UI sync
         renderWorkout();
       }
     }
