@@ -15,10 +15,11 @@
       --border: #334155;
       --success: #22c55e;
       --youtube: #ef4444;
+      --warning: #f59e0b;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-    body { background-color: var(--bg); color: var(--text); padding: 1rem; max-width: 600px; margin: 0 auto; padding-bottom: 3rem; }
+    body { background-color: var(--bg); color: var(--text); padding: 1rem; max-width: 600px; margin: 0 auto; padding-bottom: 6rem; }
     
     header { text-align: center; margin-bottom: 1.25rem; padding-top: 1rem; }
     h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 0.25rem; }
@@ -55,16 +56,33 @@
 
     .btn-reset { width: 100%; padding: 0.75rem; background: transparent; border: 1px solid #ef4444; color: #ef4444; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 2rem; }
 
+    /* Floating Rest Timer Bar */
+    .timer-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0284c7; color: #fff; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center; z-index: 999; box-shadow: 0 -4px 12px rgba(0,0,0,0.4); }
+    .timer-info { font-weight: bold; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; }
+    .timer-btns { display: flex; gap: 0.4rem; }
+    .timer-btns button { background: #0f172a; border: 1px solid var(--border); color: var(--text); padding: 0.4rem 0.6rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+    .timer-btns button.stop-btn { background: #ef4444; color: #fff; border: none; }
+
     /* Modal / Overlay Guide Styles */
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; padding: 1rem; overflow-y: auto; }
     .modal-content { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; max-width: 550px; margin: 1rem auto; position: relative; }
     .modal-close { position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
+    
+    /* Effort Explanation Box */
+    .effort-box { background: var(--bg); border: 1px solid var(--accent); border-radius: 10px; padding: 1rem; margin-bottom: 1.5rem; }
+    .effort-box h3 { color: var(--accent); font-size: 1.05rem; margin-bottom: 0.5rem; }
+    .effort-level { margin-bottom: 0.75rem; font-size: 0.85rem; line-height: 1.4; }
+    .effort-level:last-child { margin-bottom: 0; }
+    .effort-badge { display: inline-block; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: bold; font-size: 0.75rem; margin-right: 0.3rem; }
+    .badge-high { background: #ef4444; color: #fff; }
+    .badge-med { background: var(--warning); color: #000; }
+    .badge-light { background: var(--success); color: #000; }
+
     .guide-item { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
     .guide-item:last-child { border-bottom: none; margin-bottom: 0; }
     .guide-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; }
     .guide-title { font-size: 1.05rem; color: var(--accent); font-weight: bold; }
     .yt-link { font-size: 0.75rem; color: #f8fafc; background: var(--youtube); padding: 0.25rem 0.5rem; border-radius: 6px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem; }
-    .yt-link:hover { opacity: 0.9; }
     .guide-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem; line-height: 1.4; }
     .guide-svg { width: 100%; max-height: 140px; background: #0f172a; border-radius: 8px; padding: 0.5rem; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); }
   </style>
@@ -88,11 +106,44 @@
 
   <button class="btn-reset" onclick="resetAllData()">Reset All Progress</button>
 
-  <!-- Exercise Guide Modal -->
+  <!-- Sticky Rest Timer Bar -->
+  <div class="timer-bar">
+    <div class="timer-info">
+      <span>⏱️ Rest:</span>
+      <span id="timerDisplay">Ready</span>
+    </div>
+    <div class="timer-btns">
+      <button onclick="startTimer(60)">60s</button>
+      <button onclick="startTimer(90)">90s</button>
+      <button onclick="startTimer(120)">2m</button>
+      <button class="stop-btn" onclick="stopTimer()">Reset</button>
+    </div>
+  </div>
+
+  <!-- Exercise & Effort Guide Modal -->
   <div class="modal-overlay" id="guideModal">
     <div class="modal-content">
       <button class="modal-close" onclick="toggleModal(false)">&times;</button>
-      <h2 style="color: var(--accent); margin-bottom: 1rem;">Complete Exercise Guide</h2>
+      <h2 style="color: var(--accent); margin-bottom: 1rem;">Routine & Form Guide</h2>
+
+      <!-- Effort Breakdown Box -->
+      <div class="effort-box">
+        <h3>💡 Understanding Effort Levels (RIR)</h3>
+        <div class="effort-level">
+          <span class="effort-badge badge-high">HIGH EFFORT</span> <b>(1 RIR — Mon/Tue/Thu/Fri)</b><br>
+          <span style="color: var(--text-muted);">Stop <b>1 rep short of failure</b>. The final rep should feel slow, heavy, and intense, but done with clean form. Forces strength & muscle growth.</span>
+        </div>
+        <div class="effort-level">
+          <span class="effort-badge badge-med">MEDIUM EFFORT</span> <b>(3–4 RIR — Wed)</b><br>
+          <span style="color: var(--text-muted);">Stop with <b>3 to 4 easy reps left in the tank</b>. Smooth, controlled speed. Focuses on mind-muscle squeeze, blood flow, and joint recovery.</span>
+        </div>
+        <div class="effort-level">
+          <span class="effort-badge badge-light">LIGHT EFFORT</span> <b>(5+ RIR — Sat)</b><br>
+          <span style="color: var(--text-muted);">Very easy bodyweight movement. Keeps your daily habit active without accumulating any muscular or central nervous system fatigue.</span>
+        </div>
+      </div>
+
+      <h3 style="color: var(--accent); margin-bottom: 0.75rem;">Exercise Form Guides</h3>
 
       <!-- Pull Ups -->
       <div class="guide-item">
@@ -134,13 +185,13 @@
         </div>
       </div>
 
-      <!-- Push Ups -->
+      <!-- Deficit Push Ups -->
       <div class="guide-item">
         <div class="guide-header-row">
-          <div class="guide-title">3. Push-Ups</div>
-          <a class="yt-link" href="https://www.youtube.com/results?search_query=deficit+push+ups+form" target="_blank">Watch Tutorial ↗</a>
+          <div class="guide-title">3. Deficit Push-Ups</div>
+          <a class="yt-link" href="https://www.youtube.com/results?search_query=deficit+push+ups+handles+form" target="_blank">Watch Tutorial ↗</a>
         </div>
-        <div class="guide-desc"><b>Target:</b> Mid Chest & Core. Keep a rigid plank position. Elevate hands on dip station base for a deeper chest stretch.</div>
+        <div class="guide-desc"><b>Target:</b> Mid Chest & Core. Use push-up handles to elevate hands. Lower down until chest dips below handle level for a deeper chest stretch.</div>
         <div class="guide-svg">
           <svg viewBox="0 0 200 120" width="100%" height="120">
             <circle cx="160" cy="45" r="10" fill="#38bdf8" />
@@ -247,7 +298,7 @@
       ]},
       Wed: { name: "Form & Squeeze", effort: "Medium Effort", moves: [
         { name: "Pull-Ups (Banded)", target: "Aim for 5–8 smooth reps", max: 30 },
-        { name: "Push-Ups", target: "Aim for 8–12 smooth reps", max: 30 },
+        { name: "Deficit Push-Ups", target: "Aim for 8–12 smooth reps", max: 30 },
         { name: "DB Lateral Raises (8 lb)", target: "Aim for 15–20 slow reps", max: 30 },
         { name: "Hanging Leg Raises", target: "Aim for 8–10 smooth reps", max: 30 }
       ]},
@@ -264,7 +315,7 @@
         { name: "Plank Hold", target: "Aim for 45–60 secs", max: 90, step: 5 }
       ]},
       Sat: { name: "Active Light Reset", effort: "Light Effort", moves: [
-        { name: "Light Push-Ups", target: "Aim for 8–10 easy reps", max: 30 },
+        { name: "Light Deficit Push-Ups", target: "Aim for 8–10 easy reps", max: 30 },
         { name: "Light Bodyweight Move", target: "Aim for 8–10 easy reps", max: 30 }
       ]},
       Sun: { name: "Rest & Recovery", effort: "Rest Day", moves: [] }
@@ -277,6 +328,45 @@
     let currentDay = "Mon";
     let todayWeek = 1;
     let todayDay = "Mon";
+
+    /* Rest Timer Script */
+    let timerInterval = null;
+    let timeLeft = 0;
+
+    function startTimer(seconds) {
+      clearInterval(timerInterval);
+      timeLeft = seconds;
+      updateTimerDisplay();
+
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          document.getElementById("timerDisplay").innerText = "TIME UP! 🎉";
+          try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            osc.connect(ctx.destination);
+            osc.frequency.value = 880;
+            osc.start();
+            osc.stop(ctx.currentTime + 0.3);
+          } catch(e) {}
+        } else {
+          updateTimerDisplay();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(timeLeft / 60);
+      const secs = timeLeft % 60;
+      document.getElementById("timerDisplay").innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+      document.getElementById("timerDisplay").innerText = "Ready";
+    }
 
     function autoDetectDate() {
       const now = new Date();
@@ -343,10 +433,12 @@
       const data = workoutData[currentDay];
       
       const walkKey = getKey("walk");
+      const jacksKey = getKey("jacks");
       const invKey = getKey("inversion");
       const massageKey = getKey("massage");
 
       const isWalkChecked = localStorage.getItem(walkKey) === "true";
+      const isJacksChecked = localStorage.getItem(jacksKey) === "true";
       const isInvChecked = localStorage.getItem(invKey) === "true";
       const isMassageChecked = localStorage.getItem(massageKey) === "true";
 
@@ -360,6 +452,11 @@
           <div class="checklist-item">
             <input type="checkbox" id="walkCheck" ${isWalkChecked ? "checked" : ""} onchange="saveCheck('${walkKey}', this.checked)">
             <label for="walkCheck">30-Minute Daily Walk</label>
+          </div>
+
+          <div class="checklist-item">
+            <input type="checkbox" id="jacksCheck" ${isJacksChecked ? "checked" : ""} onchange="saveCheck('${jacksKey}', this.checked)">
+            <label for="jacksCheck">100 Jumping Jacks</label>
           </div>
 
           <div class="checklist-item">
