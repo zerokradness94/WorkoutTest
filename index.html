@@ -66,7 +66,7 @@
     .timer-btns button { background: #0f172a; border: 1px solid var(--border); color: var(--text); padding: 0.4rem 0.6rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
     .timer-btns button.stop-btn { background: #ef4444; color: #fff; border: none; }
 
-    /* Modal / Overlay Guide Styles */
+    /* Modals */
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; padding: 1rem; overflow-y: auto; }
     .modal-content { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; max-width: 550px; margin: 1rem auto; position: relative; }
     .modal-close { position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
@@ -87,6 +87,12 @@
     .guide-title { font-size: 1.05rem; color: var(--accent); font-weight: bold; }
     .guide-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem; line-height: 1.4; }
     .guide-svg { width: 100%; max-height: 140px; background: #0f172a; border-radius: 8px; padding: 0.5rem; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); }
+
+    /* Custom Reset Confirmation Modal Buttons */
+    .reset-modal-btns { display: flex; gap: 0.75rem; margin-top: 1.25rem; }
+    .reset-modal-btns button { flex: 1; padding: 0.75rem; border-radius: 8px; font-weight: bold; cursor: pointer; border: none; }
+    .btn-confirm-danger { background: #ef4444; color: #fff; }
+    .btn-cancel { background: var(--border); color: var(--text); }
   </style>
 </head>
 <body>
@@ -106,7 +112,7 @@
   <!-- Main Content Card -->
   <div id="workoutContent"></div>
 
-  <button class="btn-reset" onclick="resetAllData()">Reset All Progress</button>
+  <button class="btn-reset" onclick="openResetModal()">Reset All Progress</button>
 
   <!-- Sticky Rest Timer Bar -->
   <div class="timer-bar">
@@ -119,6 +125,20 @@
       <button onclick="startTimer(90)">90s</button>
       <button onclick="startTimer(120)">2m</button>
       <button class="stop-btn" onclick="stopTimer()">Reset</button>
+    </div>
+  </div>
+
+  <!-- Custom Reset Confirmation Modal (Replaces Native Confirm Popup) -->
+  <div class="modal-overlay" id="resetModal">
+    <div class="modal-content" style="text-align: center; max-width: 400px; margin-top: 30vh;">
+      <h3 style="color: #ef4444; margin-bottom: 0.5rem; font-size: 1.2rem;">⚠️ Reset All Progress?</h3>
+      <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.4;">
+        This will permanently clear all tracked sets, reps, and checklist items across all 4 weeks.
+      </p>
+      <div class="reset-modal-btns">
+        <button class="btn-cancel" onclick="closeResetModal()">Cancel</button>
+        <button class="btn-confirm-danger" onclick="executeReset()">Yes, Wipe Everything</button>
+      </div>
     </div>
   </div>
 
@@ -424,6 +444,41 @@
       document.getElementById("guideModal").style.display = show ? "block" : "none";
     }
 
+    function openResetModal() {
+      document.getElementById("resetModal").style.display = "block";
+    }
+
+    function closeResetModal() {
+      document.getElementById("resetModal").style.display = "none";
+    }
+
+    function executeReset() {
+      // 1. Direct DOM reset
+      document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+      document.querySelectorAll('select').forEach(sel => sel.value = "0");
+
+      // 2. Clear all key patterns explicitly
+      days.forEach(d => {
+        for (let w = 1; w <= 4; w++) {
+          ['walk', 'jacks', 'flexibility', 'posture', 'inversion', 'massage'].forEach(item => {
+            try { localStorage.removeItem(`w${w}_${d}_${item}`); } catch(e) {}
+          });
+          for (let m = 0; m < 4; m++) {
+            for (let s = 1; s <= 3; s++) {
+              try { localStorage.removeItem(`w${w}_${d}_m${m}_s${s}`); } catch(e) {}
+            }
+          }
+        }
+      });
+
+      // 3. Fallback wipe
+      try { localStorage.clear(); } catch(e) {}
+
+      // 4. Close modal and update view
+      closeResetModal();
+      renderWorkout();
+    }
+
     function renderDayNav() {
       const container = document.getElementById("dayNav");
       container.innerHTML = "";
@@ -544,35 +599,6 @@
 
     function saveVal(key, val) {
       try { localStorage.setItem(key, val); } catch(e) {}
-    }
-
-    /* Mobile & Brave Shield Proof Reset */
-    function resetAllData() {
-      if (confirm("Are you sure you want to reset all tracked data?")) {
-        // Direct DOM uncheck & reset first
-        document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-        document.querySelectorAll('select').forEach(sel => sel.value = "0");
-
-        // Targeted key deletion
-        days.forEach(d => {
-          for (let w = 1; w <= 4; w++) {
-            ['walk', 'jacks', 'flexibility', 'posture', 'inversion', 'massage'].forEach(item => {
-              try { localStorage.removeItem(`w${w}_${d}_${item}`); } catch(e) {}
-            });
-            for (let m = 0; m < 4; m++) {
-              for (let s = 1; s <= 3; s++) {
-                try { localStorage.removeItem(`w${w}_${d}_m${m}_s${s}`); } catch(e) {}
-              }
-            }
-          }
-        });
-
-        // Nuclear clear
-        try { localStorage.clear(); } catch(e) {}
-
-        // Immediate UI sync
-        renderWorkout();
-      }
     }
 
     init();
