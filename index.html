@@ -490,7 +490,7 @@
 
       days.forEach(d => {
         for (let w = 1; w <= 4; w++) {
-          ['walk', 'jacks', 'flexibility', 'posture', 'inversion', 'massage'].forEach(item => {
+          ['walk', 'jacks', 'jump', 'posture', 'inversion', 'massage'].forEach(item => {
             try { localStorage.removeItem(`w${w}_${d}_${item}`); } catch(e) {}
           });
           for (let m = 0; m < 4; m++) {
@@ -530,17 +530,19 @@
       
       const walkKey = getKey("walk");
       const jacksKey = getKey("jacks");
-      const flexKey = getKey("flexibility");
+      const jumpKey = getKey("jump");
       const postureKey = getKey("posture");
       const invKey = getKey("inversion");
       const massageKey = getKey("massage");
 
       const isWalkChecked = localStorage.getItem(walkKey) === "true";
       const isJacksChecked = localStorage.getItem(jacksKey) === "true";
-      const isFlexChecked = localStorage.getItem(flexKey) === "true";
+      const isJumpChecked = localStorage.getItem(jumpKey) === "true";
       const isPostureChecked = localStorage.getItem(postureKey) === "true";
       const isInvChecked = localStorage.getItem(invKey) === "true";
       const isMassageChecked = localStorage.getItem(massageKey) === "true";
+
+      const showJumpTraining = (currentDay === "Tue" || currentDay === "Sat");
 
       let html = `
         <div class="card">
@@ -559,10 +561,12 @@
             <label for="jacksCheck">100 Jumping Jacks</label>
           </div>
 
+          ${showJumpTraining ? `
           <div class="checklist-item">
-            <input type="checkbox" id="flexCheck" ${isFlexChecked ? "checked" : ""} onchange="saveCheck('${flexKey}', this.checked)">
-            <label for="flexCheck">Minimalist Flexibility Program</label>
+            <input type="checkbox" id="jumpCheck" ${isJumpChecked ? "checked" : ""} onchange="saveCheck('${jumpKey}', this.checked)">
+            <label for="jumpCheck">Jump Training <a class="ext-link" href="https://www.youtube.com/watch?v=VQCZBadw0nI" target="_blank">YouTube ↗</a></label>
           </div>
+          ` : ''}
 
           <div class="checklist-item">
             <input type="checkbox" id="postureCheck" ${isPostureChecked ? "checked" : ""} onchange="saveCheck('${postureKey}', this.checked)">
