@@ -316,12 +316,16 @@
       }
 
       function escapeHtml(str) {
-        return String(str)
-          .replace(/&/g, "&")
-          .replace(/</g, "<")
-          .replace(/>/g, ">")
-          .replace(/"/g, """)
-          .replace(/'/g, "'");
+        var map = {
+          "\x26": "\x26amp;",
+          "\x3c": "\x26lt;",
+          "\x3e": "\x26gt;",
+          "\x22": "\x26quot;",
+          "\x27": "\x26#39;"
+        };
+        return String(str).replace(/[\x26\x3c\x3e\x22\x27]/g, function(ch) {
+          return map[ch];
+        });
       }
 
       var workoutData = {
