@@ -40,7 +40,7 @@
     .day-dot { display: block; font-size: 0.65rem; margin-top: 2px; opacity: 0.85; }
 
     .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
-    .card-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .card-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
     .tag { font-size: 0.75rem; padding: 0.2rem 0.55rem; border-radius: 4px; background: rgba(56, 189, 248, 0.15); color: var(--accent); border: 1px solid rgba(56, 189, 248, 0.3); }
 
     .checklist-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
@@ -60,17 +60,28 @@
     .set-box select { width: 100%; background: var(--card-bg); border: 1px solid var(--border); color: var(--text); text-align: center; font-size: 0.9rem; font-weight: bold; border-radius: 4px; padding: 0.25rem 0; cursor: pointer; }
     .set-box select:focus { outline: none; border-color: var(--accent); }
 
+    /* Progression Log & Exercise Manager Styling */
     .form-group { margin-bottom: 0.85rem; }
     .form-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.35rem; font-weight: 600; }
     .form-row { display: grid; grid-template-columns: 1fr 1.4fr; gap: 0.65rem; }
-    .form-input, .form-textarea { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 0.6rem 0.75rem; font-size: 0.9rem; }
-    .form-input:focus, .form-textarea:focus { outline: none; border-color: var(--accent); }
+    .inline-add-row { display: flex; gap: 0.5rem; }
+    .form-input, .form-select, .form-textarea { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 0.6rem 0.75rem; font-size: 0.9rem; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--accent); }
     .form-textarea { resize: vertical; min-height: 68px; }
     .btn-primary { width: 100%; padding: 0.7rem; background: var(--success); color: #000; border: none; border-radius: 8px; font-weight: 700; font-size: 0.95rem; cursor: pointer; margin-top: 0.25rem; }
     .btn-primary:hover { opacity: 0.92; }
+    .btn-accent-sm { background: var(--accent); color: #000; border: none; border-radius: 8px; padding: 0.6rem 0.9rem; font-weight: 700; font-size: 0.85rem; cursor: pointer; white-space: nowrap; }
+    .btn-accent-sm:hover { opacity: 0.9; }
+
+    /* Saved Exercise Chips */
+    .chip-list { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 0.75rem; }
+    .exercise-chip { display: inline-flex; align-items: center; gap: 0.45rem; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 0.35rem 0.6rem; border-radius: 20px; font-size: 0.82rem; }
+    .chip-remove { background: transparent; border: none; color: #ef4444; font-weight: bold; cursor: pointer; font-size: 0.85rem; line-height: 1; padding: 0 0.15rem; }
+    .chip-remove:hover { opacity: 0.8; }
+    .helper-hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.35rem; }
 
     .filter-bar { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
-    .filter-select { background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 6px; padding: 0.35rem 0.5rem; font-size: 0.8rem; max-width: 190px; }
+    .filter-select { background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 6px; padding: 0.35rem 0.5rem; font-size: 0.8rem; max-width: 195px; }
 
     .log-entry { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem; margin-bottom: 0.65rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; }
     .log-entry:last-child { margin-bottom: 0; }
@@ -78,9 +89,16 @@
     .log-exercise { font-weight: 700; color: var(--accent); font-size: 0.95rem; }
     .log-date { font-size: 0.75rem; color: var(--text-muted); background: var(--card-bg); padding: 0.15rem 0.45rem; border-radius: 4px; border: 1px solid var(--border); }
     .log-notes { font-size: 0.88rem; color: var(--text); line-height: 1.4; white-space: pre-wrap; }
-    .btn-delete-log { background: transparent; border: 1px solid rgba(239, 68, 68, 0.4); color: #ef4444; border-radius: 6px; padding: 0.25rem 0.5rem; font-size: 0.75rem; cursor: pointer; flex-shrink: 0; }
+    .log-actions { display: flex; gap: 0.35rem; flex-shrink: 0; }
+    .btn-edit-log { background: transparent; border: 1px solid rgba(56, 189, 248, 0.45); color: var(--accent); border-radius: 6px; padding: 0.25rem 0.5rem; font-size: 0.78rem; cursor: pointer; }
+    .btn-edit-log:hover { background: rgba(56, 189, 248, 0.15); }
+    .btn-delete-log { background: transparent; border: 1px solid rgba(239, 68, 68, 0.45); color: #ef4444; border-radius: 6px; padding: 0.25rem 0.5rem; font-size: 0.78rem; cursor: pointer; }
     .btn-delete-log:hover { background: rgba(239, 68, 68, 0.15); }
-    .empty-state { text-align: center; color: var(--text-muted); font-size: 0.88rem; padding: 1.5rem 0.5rem; }
+    .edit-form-wrap { width: 100%; }
+    .edit-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; justify-content: flex-end; }
+    .btn-save-edit { background: var(--success); color: #000; border: none; border-radius: 6px; padding: 0.35rem 0.75rem; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+    .btn-cancel-edit { background: var(--border); color: var(--text); border: none; border-radius: 6px; padding: 0.35rem 0.75rem; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+    .empty-state { text-align: center; color: var(--text-muted); font-size: 0.88rem; padding: 1.25rem 0.5rem; }
 
     .btn-reset { width: 100%; padding: 0.75rem; background: transparent; border: 1px solid #ef4444; color: #ef4444; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 2rem; }
 
@@ -138,7 +156,7 @@
     <div class="modal-content" style="text-align: center; max-width: 400px; margin-top: 30vh;">
       <h3 style="color: #ef4444; margin-bottom: 0.5rem; font-size: 1.2rem;">⚠️ Reset All Progress?</h3>
       <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.4;">
-        This will permanently clear all tracked sets, checklist items, and progression log entries.
+        This will permanently clear all tracked sets, checklist items, saved exercises, and progression log entries.
       </p>
       <div class="reset-modal-btns">
         <button type="button" class="btn-cancel" id="cancelResetBtn">Cancel</button>
@@ -391,18 +409,6 @@
         }
       };
 
-      var defaultExercises = [
-        "Pull-Ups (Banded)",
-        "Chin-Ups (Banded)",
-        "Dips (Banded)",
-        "Deficit Push-Ups",
-        "DB Lateral Raises (8 lb)",
-        "DB Rear Delt Flyes (8 lb)",
-        "Hanging Leg Raises",
-        "Plank Hold",
-        "C25K Run"
-      ];
-
       var days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
       var jsDayMap = { 0: "Sun", 1: "Mon", 2: "Tue", 3: "Wed", 4: "Thu", 5: "Fri", 6: "Sat" };
 
@@ -412,6 +418,7 @@
       var todayWeek = 1;
       var todayDay = "Mon";
       var logFilterExercise = "ALL";
+      var editingLogId = null;
 
       var audioCtx = null;
 
@@ -572,6 +579,22 @@
         return "w" + currentWeek + "_" + currentDay + "_" + suffix;
       }
 
+      /* Custom Exercise List Storage */
+      function getSavedExercises() {
+        try {
+          var raw = getStorage("custom_exercises", "[]");
+          var parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function saveSavedExercises(list) {
+        setStorage("custom_exercises", JSON.stringify(list));
+      }
+
+      /* Progression Logs Storage */
       function getProgressionLogs() {
         try {
           var raw = getStorage("progression_logs", "[]");
@@ -589,35 +612,88 @@
       function renderProgressionTab() {
         var container = document.getElementById("workoutContent");
         var logs = getProgressionLogs();
+        var savedExercises = getSavedExercises();
 
-        var exerciseSet = {};
-        defaultExercises.forEach(function(ex) { exerciseSet[ex] = true; });
+        // Build dropdown options from user's saved exercise list
+        var exerciseSelectOptions = "";
+        if (savedExercises.length === 0) {
+          exerciseSelectOptions = '<option value="">-- Add an exercise below first --</option>';
+        } else {
+          exerciseSelectOptions = '<option value="">-- Select exercise --</option>';
+          savedExercises.forEach(function(ex) {
+            exerciseSelectOptions += '<option value="' + escapeHtml(ex) + '">' + escapeHtml(ex) + "</option>";
+          });
+        }
+
+        // Build chips for Manage Exercise List section
+        var chipsHtml = "";
+        if (savedExercises.length === 0) {
+          chipsHtml = '<div class="helper-hint">No exercises added yet. Add your first exercise above to see it in the dropdown!</div>';
+        } else {
+          chipsHtml = '<div class="chip-list">' + savedExercises.map(function(ex) {
+            return (
+              '<span class="exercise-chip">' +
+                "<span>" + escapeHtml(ex) + "</span>" +
+                '<button type="button" class="chip-remove" data-ex="' + escapeHtml(ex) + '" title="Remove from list">✕</button>' +
+              "</span>"
+            );
+          }).join("") + "</div>";
+        }
+
+        // Build filter dropdown from saved exercises + any exercise names present in past logs
+        var filterExerciseSet = {};
+        savedExercises.forEach(function(ex) { filterExerciseSet[ex] = true; });
         logs.forEach(function(item) {
-          if (item.exercise) exerciseSet[item.exercise] = true;
+          if (item.exercise) filterExerciseSet[item.exercise] = true;
         });
-        var allExercises = Object.keys(exerciseSet);
-
-        var filteredLogs = logFilterExercise === "ALL"
-          ? logs
-          : logs.filter(function(item) { return item.exercise.toLowerCase() === logFilterExercise.toLowerCase(); });
-
-        var datalistOptions = defaultExercises
-          .map(function(ex) { return '<option value="' + escapeHtml(ex) + '">'; })
-          .join("");
+        var allFilterExercises = Object.keys(filterExerciseSet);
 
         var filterOptions = '<option value="ALL"' + (logFilterExercise === "ALL" ? " selected" : "") + ">All Exercises (" + logs.length + ")</option>";
-        allExercises.forEach(function(ex) {
+        allFilterExercises.forEach(function(ex) {
           var count = logs.filter(function(l) { return l.exercise.toLowerCase() === ex.toLowerCase(); }).length;
           if (count > 0) {
             filterOptions += '<option value="' + escapeHtml(ex) + '"' + (logFilterExercise === ex ? " selected" : "") + ">" + escapeHtml(ex) + " (" + count + ")</option>";
           }
         });
 
+        var filteredLogs = logFilterExercise === "ALL"
+          ? logs
+          : logs.filter(function(item) { return item.exercise.toLowerCase() === logFilterExercise.toLowerCase(); });
+
         var entriesHtml = "";
         if (filteredLogs.length === 0) {
           entriesHtml = '<div class="empty-state">No progression entries yet. Log your first set above to start tracking your progress!</div>';
         } else {
           entriesHtml = filteredLogs.map(function(entry) {
+            if (editingLogId === entry.id) {
+              // Build edit exercise options (include current entry's exercise even if deleted from saved list)
+              var editOptions = "";
+              var hasCurrent = false;
+              savedExercises.forEach(function(ex) {
+                if (ex === entry.exercise) hasCurrent = true;
+                editOptions += '<option value="' + escapeHtml(ex) + '"' + (ex === entry.exercise ? " selected" : "") + ">" + escapeHtml(ex) + "</option>";
+              });
+              if (!hasCurrent && entry.exercise) {
+                editOptions = '<option value="' + escapeHtml(entry.exercise) + '" selected>' + escapeHtml(entry.exercise) + "</option>" + editOptions;
+              }
+
+              return (
+                '<div class="log-entry">' +
+                  '<div class="edit-form-wrap">' +
+                    '<div class="form-row" style="margin-bottom: 0.5rem;">' +
+                      '<input type="date" id="editDateInput" class="form-input" value="' + escapeHtml(entry.date) + '">' +
+                      '<select id="editExerciseSelect" class="form-select">' + editOptions + "</select>" +
+                    "</div>" +
+                    '<textarea id="editNotesInput" class="form-textarea" style="min-height: 56px;">' + escapeHtml(entry.notes) + "</textarea>" +
+                    '<div class="edit-actions">' +
+                      '<button type="button" class="btn-cancel-edit" id="cancelEditLogBtn">Cancel</button>' +
+                      '<button type="button" class="btn-save-edit" data-id="' + escapeHtml(entry.id) + '" id="saveEditLogBtn">Save Changes</button>' +
+                    "</div>" +
+                  "</div>" +
+                "</div>"
+              );
+            }
+
             return (
               '<div class="log-entry">' +
                 '<div style="flex: 1; min-width: 0;">' +
@@ -627,7 +703,10 @@
                   "</div>" +
                   '<div class="log-notes">' + escapeHtml(entry.notes) + "</div>" +
                 "</div>" +
-                '<button type="button" class="btn-delete-log" data-id="' + escapeHtml(entry.id) + '" title="Delete entry">✕</button>' +
+                '<div class="log-actions">' +
+                  '<button type="button" class="btn-edit-log" data-id="' + escapeHtml(entry.id) + '" title="Edit entry">✎</button>' +
+                  '<button type="button" class="btn-delete-log" data-id="' + escapeHtml(entry.id) + '" title="Delete entry">✕</button>' +
+                "</div>" +
               "</div>"
             );
           }).join("");
@@ -636,8 +715,20 @@
         container.innerHTML =
           '<div class="card">' +
             '<div class="card-title">' +
+              "<span>Manage Exercise List</span>" +
+              '<span class="tag">' + savedExercises.length + " Saved</span>" +
+            "</div>" +
+            '<div class="inline-add-row">' +
+              '<input type="text" id="newExerciseNameInput" class="form-input" placeholder="e.g. Incline Press, Pull-Ups...">' +
+              '<button type="button" class="btn-accent-sm" id="addExerciseNameBtn">+ Add</button>' +
+            "</div>" +
+            chipsHtml +
+          "</div>" +
+
+          '<div class="card">' +
+            '<div class="card-title">' +
               "<span>Log Exercise Progression</span>" +
-              '<span class="tag">History</span>' +
+              '<span class="tag">Entry</span>' +
             "</div>" +
             '<div class="form-row">' +
               '<div class="form-group">' +
@@ -645,17 +736,17 @@
                 '<input type="date" id="logDateInput" class="form-input" value="' + getTodayISO() + '">' +
               "</div>" +
               '<div class="form-group">' +
-                '<label for="logExerciseInput">Exercise</label>' +
-                '<input type="text" id="logExerciseInput" list="exerciseSuggestions" class="form-input" placeholder="e.g. Pull-Ups (Banded)">' +
-                '<datalist id="exerciseSuggestions">' + datalistOptions + "</datalist>" +
+                '<label for="logExerciseSelect">Exercise</label>' +
+                '<select id="logExerciseSelect" class="form-select">' + exerciseSelectOptions + "</select>" +
               "</div>" +
             "</div>" +
             '<div class="form-group">' +
               '<label for="logNotesInput">Weight + Reps / Notes</label>' +
-              '<textarea id="logNotesInput" class="form-textarea" placeholder="e.g. BW (black band) • 8, 7, 6 reps — felt strong, clean form"></textarea>' +
+              '<textarea id="logNotesInput" class="form-textarea" placeholder="e.g. 30 lb • 10, 10, 8 reps — felt strong"></textarea>' +
             "</div>" +
             '<button type="button" class="btn-primary" id="saveLogEntryBtn">+ Add Progression Entry</button>' +
           "</div>" +
+
           '<div class="card">' +
             '<div class="filter-bar">' +
               '<span style="font-weight: bold; font-size: 1rem;">Past Logs</span>' +
@@ -664,13 +755,58 @@
             '<div id="logEntriesList">' + entriesHtml + "</div>" +
           "</div>";
 
+        /* Add Exercise Name Handler */
+        function handleAddExerciseName() {
+          var inputEl = document.getElementById("newExerciseNameInput");
+          var rawName = inputEl.value.trim();
+          if (!rawName) {
+            inputEl.focus();
+            return;
+          }
+          var currentList = getSavedExercises();
+          var exists = currentList.some(function(item) {
+            return item.toLowerCase() === rawName.toLowerCase();
+          });
+          if (!exists) {
+            currentList.push(rawName);
+            saveSavedExercises(currentList);
+          }
+          renderProgressionTab();
+        }
+
+        document.getElementById("addExerciseNameBtn").addEventListener("click", handleAddExerciseName);
+        document.getElementById("newExerciseNameInput").addEventListener("keydown", function(e) {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            handleAddExerciseName();
+          }
+        });
+
+        /* Remove Exercise Chip Handler */
+        container.querySelectorAll(".chip-remove").forEach(function(btn) {
+          btn.addEventListener("click", function() {
+            var targetEx = this.dataset.ex;
+            var filtered = getSavedExercises().filter(function(item) {
+              return item !== targetEx;
+            });
+            saveSavedExercises(filtered);
+            renderProgressionTab();
+          });
+        });
+
+        /* Add Progression Entry Handler */
         document.getElementById("saveLogEntryBtn").addEventListener("click", function() {
           var dateVal = document.getElementById("logDateInput").value || getTodayISO();
-          var exerciseVal = document.getElementById("logExerciseInput").value.trim();
+          var exerciseSelect = document.getElementById("logExerciseSelect");
+          var exerciseVal = exerciseSelect.value.trim();
           var notesVal = document.getElementById("logNotesInput").value.trim();
 
           if (!exerciseVal) {
-            document.getElementById("logExerciseInput").focus();
+            if (savedExercises.length === 0) {
+              document.getElementById("newExerciseNameInput").focus();
+            } else {
+              exerciseSelect.focus();
+            }
             return;
           }
           if (!notesVal) {
@@ -690,16 +826,64 @@
           renderProgressionTab();
         });
 
+        /* Filter Past Logs Handler */
         document.getElementById("logFilterSelect").addEventListener("change", function() {
           logFilterExercise = this.value;
+          editingLogId = null;
           renderProgressionTab();
         });
 
+        /* Edit Entry Handlers */
+        container.querySelectorAll(".btn-edit-log").forEach(function(btn) {
+          btn.addEventListener("click", function() {
+            editingLogId = this.dataset.id;
+            renderProgressionTab();
+          });
+        });
+
+        var cancelEditBtn = document.getElementById("cancelEditLogBtn");
+        if (cancelEditBtn) {
+          cancelEditBtn.addEventListener("click", function() {
+            editingLogId = null;
+            renderProgressionTab();
+          });
+        }
+
+        var saveEditBtn = document.getElementById("saveEditLogBtn");
+        if (saveEditBtn) {
+          saveEditBtn.addEventListener("click", function() {
+            var targetId = this.dataset.id;
+            var newDate = document.getElementById("editDateInput").value || getTodayISO();
+            var newExercise = document.getElementById("editExerciseSelect").value.trim();
+            var newNotes = document.getElementById("editNotesInput").value.trim();
+
+            if (!newExercise || !newNotes) return;
+
+            var logsList = getProgressionLogs().map(function(item) {
+              if (item.id === targetId) {
+                return {
+                  id: item.id,
+                  date: newDate,
+                  exercise: newExercise,
+                  notes: newNotes
+                };
+              }
+              return item;
+            });
+            logsList.sort(function(a, b) { return (b.date || "").localeCompare(a.date || ""); });
+            saveProgressionLogs(logsList);
+            editingLogId = null;
+            renderProgressionTab();
+          });
+        }
+
+        /* Delete Entry Handler */
         container.querySelectorAll(".btn-delete-log").forEach(function(btn) {
           btn.addEventListener("click", function() {
             var targetId = this.dataset.id;
             var remaining = getProgressionLogs().filter(function(item) { return item.id !== targetId; });
             saveProgressionLogs(remaining);
+            if (editingLogId === targetId) editingLogId = null;
             renderProgressionTab();
           });
         });
@@ -828,6 +1012,8 @@
       });
       document.getElementById("confirmResetBtn").addEventListener("click", function() {
         clearStorage();
+        editingLogId = null;
+        logFilterExercise = "ALL";
         document.getElementById("resetModal").style.display = "none";
         renderDayNav();
         renderMainContent();
