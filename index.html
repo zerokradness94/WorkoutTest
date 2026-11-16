@@ -43,7 +43,6 @@
     .card-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
     .tag { font-size: 0.75rem; padding: 0.2rem 0.55rem; border-radius: 4px; background: rgba(56, 189, 248, 0.15); color: var(--accent); border: 1px solid rgba(56, 189, 248, 0.3); }
 
-    /* Checklist & Sets */
     .checklist-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
     .checklist-item:last-child { border-bottom: none; }
     .checklist-item input[type="checkbox"] { width: 1.3rem; height: 1.3rem; accent-color: var(--accent); cursor: pointer; }
@@ -61,7 +60,6 @@
     .set-box select { width: 100%; background: var(--card-bg); border: 1px solid var(--border); color: var(--text); text-align: center; font-size: 0.9rem; font-weight: bold; border-radius: 4px; padding: 0.25rem 0; cursor: pointer; }
     .set-box select:focus { outline: none; border-color: var(--accent); }
 
-    /* Progression Log Styling */
     .form-group { margin-bottom: 0.85rem; }
     .form-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.35rem; font-weight: 600; }
     .form-row { display: grid; grid-template-columns: 1fr 1.4fr; gap: 0.65rem; }
@@ -86,14 +84,12 @@
 
     .btn-reset { width: 100%; padding: 0.75rem; background: transparent; border: 1px solid #ef4444; color: #ef4444; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 2rem; }
 
-    /* Floating Rest Timer Bar */
     .timer-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0284c7; color: #fff; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center; z-index: 999; box-shadow: 0 -4px 12px rgba(0,0,0,0.4); }
     .timer-info { font-weight: bold; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; }
     .timer-btns { display: flex; gap: 0.4rem; }
     .timer-btns button { background: #0f172a; border: 1px solid var(--border); color: var(--text); padding: 0.4rem 0.6rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
     .timer-btns button.stop-btn { background: #ef4444; color: #fff; border: none; }
 
-    /* Modals */
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; padding: 1rem; overflow-y: auto; }
     .modal-content { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; max-width: 550px; margin: 1rem auto; position: relative; }
     .modal-close { position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
@@ -105,7 +101,6 @@
     .guide-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem; line-height: 1.4; }
     .guide-svg { width: 100%; max-height: 140px; background: #0f172a; border-radius: 8px; padding: 0.5rem; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); }
 
-    /* Custom Reset Confirmation Modal Buttons */
     .reset-modal-btns { display: flex; gap: 0.75rem; margin-top: 1.25rem; }
     .reset-modal-btns button { flex: 1; padding: 0.75rem; border-radius: 8px; font-weight: bold; cursor: pointer; border: none; }
     .btn-confirm-danger { background: #ef4444; color: #fff; }
@@ -120,18 +115,12 @@
     <div class="date-badge" id="dateBadge">Today: Loading...</div>
   </header>
 
-  <!-- Top Navigation (Weeks + Progression Log + Guide) -->
   <div class="nav-weeks" id="weekNav"></div>
-
-  <!-- Day Selection (Hidden on Progression Log tab) -->
   <div class="nav-days" id="dayNav"></div>
-
-  <!-- Main Content Area -->
   <div id="workoutContent"></div>
 
   <button class="btn-reset" id="resetBtn">Reset All Progress</button>
 
-  <!-- Sticky Rest Timer Bar -->
   <div class="timer-bar">
     <div class="timer-info">
       <span>⏱️ Rest:</span>
@@ -145,7 +134,6 @@
     </div>
   </div>
 
-  <!-- Custom Reset Confirmation Modal -->
   <div class="modal-overlay" id="resetModal">
     <div class="modal-content" style="text-align: center; max-width: 400px; margin-top: 30vh;">
       <h3 style="color: #ef4444; margin-bottom: 0.5rem; font-size: 1.2rem;">⚠️ Reset All Progress?</h3>
@@ -159,7 +147,6 @@
     </div>
   </div>
 
-  <!-- Exercise Form Guide Modal -->
   <div class="modal-overlay" id="guideModal">
     <div class="modal-content">
       <button type="button" class="modal-close" id="closeGuideBtn">×</button>
@@ -292,12 +279,17 @@
   </div>
 
   <script>
-    (function() {
-      const memoryFallback = {};
+    window.onerror = function(msg) {
+      var badge = document.getElementById("dateBadge");
+      if (badge) badge.innerText = "Error: " + msg;
+    };
+
+    function startApp() {
+      var memoryFallback = {};
 
       function getStorage(key, defaultVal) {
         try {
-          const val = window.localStorage.getItem(key);
+          var val = window.localStorage.getItem(key);
           return val !== null ? val : defaultVal;
         } catch (e) {
           return Object.prototype.hasOwnProperty.call(memoryFallback, key) ? memoryFallback[key] : defaultVal;
@@ -316,7 +308,7 @@
         try {
           window.localStorage.clear();
         } catch (e) {}
-        for (const k in memoryFallback) {
+        for (var k in memoryFallback) {
           if (Object.prototype.hasOwnProperty.call(memoryFallback, k)) {
             delete memoryFallback[k];
           }
@@ -332,7 +324,7 @@
           .replace(/'/g, "'");
       }
 
-      const workoutData = {
+      var workoutData = {
         Mon: {
           name: "Workout 1 — Dip Focus",
           tag: "Strength",
@@ -395,7 +387,7 @@
         }
       };
 
-      const defaultExercises = [
+      var defaultExercises = [
         "Pull-Ups (Banded)",
         "Chin-Ups (Banded)",
         "Dips (Banded)",
@@ -407,23 +399,22 @@
         "C25K Run"
       ];
 
-      const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-      const jsDayMap = { 0: "Sun", 1: "Mon", 2: "Tue", 3: "Wed", 4: "Thu", 5: "Fri", 6: "Sat" };
+      var days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+      var jsDayMap = { 0: "Sun", 1: "Mon", 2: "Tue", 3: "Wed", 4: "Thu", 5: "Fri", 6: "Sat" };
 
-      let currentTab = "week"; // "week" or "log"
-      let currentWeek = 1;
-      let currentDay = "Mon";
-      let todayWeek = 1;
-      let todayDay = "Mon";
-      let logFilterExercise = "ALL";
+      var currentTab = "week";
+      var currentWeek = 1;
+      var currentDay = "Mon";
+      var todayWeek = 1;
+      var todayDay = "Mon";
+      var logFilterExercise = "ALL";
 
-      /* Audio Context Initialization */
-      let audioCtx = null;
+      var audioCtx = null;
 
       function initAudio() {
         try {
           if (!audioCtx) {
-            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            var AudioContextClass = window.AudioContext || window.webkitAudioContext;
             if (AudioContextClass) audioCtx = new AudioContextClass();
           }
           if (audioCtx && audioCtx.state === "suspended") {
@@ -434,10 +425,10 @@
 
       function playBeep(freq, duration, delay) {
         if (!audioCtx) return;
-        setTimeout(() => {
+        setTimeout(function() {
           try {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
+            var osc = audioCtx.createOscillator();
+            var gain = audioCtx.createGain();
             osc.type = "sine";
             osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
             gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
@@ -450,9 +441,8 @@
         }, delay || 0);
       }
 
-      /* Rest Timer */
-      let timerInterval = null;
-      let timeLeft = 0;
+      var timerInterval = null;
+      var timeLeft = 0;
 
       function startTimer(seconds) {
         initAudio();
@@ -460,7 +450,7 @@
         timeLeft = seconds;
         updateTimerDisplay();
 
-        timerInterval = setInterval(() => {
+        timerInterval = setInterval(function() {
           timeLeft--;
           if (timeLeft <= 0) {
             clearInterval(timerInterval);
@@ -475,9 +465,9 @@
       }
 
       function updateTimerDisplay() {
-        const mins = Math.floor(timeLeft / 60);
-        const secs = timeLeft % 60;
-        document.getElementById("timerDisplay").innerText = `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+        var mins = Math.floor(timeLeft / 60);
+        var secs = timeLeft % 60;
+        document.getElementById("timerDisplay").innerText = mins + ":" + (secs < 10 ? "0" : "") + secs;
       }
 
       function stopTimer() {
@@ -486,49 +476,51 @@
       }
 
       function getTodayISO() {
-        const now = new Date();
-        const yyyy = now.getFullYear();
-        const mm = String(now.getMonth() + 1).padStart(2, "0");
-        const dd = String(now.getDate()).padStart(2, "0");
-        return `${yyyy}-${mm}-${dd}`;
+        var now = new Date();
+        var yyyy = now.getFullYear();
+        var mm = String(now.getMonth() + 1).padStart(2, "0");
+        var dd = String(now.getDate()).padStart(2, "0");
+        return yyyy + "-" + mm + "-" + dd;
       }
 
       function autoDetectDate() {
-        const now = new Date();
+        var now = new Date();
         todayDay = jsDayMap[now.getDay()] || "Mon";
-        const dayOfMonth = now.getDate();
+        var dayOfMonth = now.getDate();
         todayWeek = Math.min(Math.ceil(dayOfMonth / 7), 4);
 
         currentWeek = todayWeek;
         currentDay = todayDay;
 
-        const options = { month: "short", day: "numeric", weekday: "short" };
-        document.getElementById("dateBadge").innerText = `Today: ${now.toLocaleDateString(undefined, options)} (W${todayWeek})`;
+        var options = { month: "short", day: "numeric", weekday: "short" };
+        document.getElementById("dateBadge").innerText = "Today: " + now.toLocaleDateString(undefined, options) + " (W" + todayWeek + ")";
       }
 
       function renderWeekNav() {
-        const container = document.getElementById("weekNav");
+        var container = document.getElementById("weekNav");
         container.innerHTML = "";
-        for (let i = 1; i <= 4; i++) {
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.innerText = `Week ${i}`;
-          if (currentTab === "week" && i === currentWeek) btn.classList.add("active");
-          btn.onclick = () => {
-            currentTab = "week";
-            currentWeek = i;
-            renderWeekNav();
-            renderDayNav();
-            renderMainContent();
-          };
-          container.appendChild(btn);
+        for (var i = 1; i <= 4; i++) {
+          (function(weekNum) {
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.innerText = "Week " + weekNum;
+            if (currentTab === "week" && weekNum === currentWeek) btn.classList.add("active");
+            btn.onclick = function() {
+              currentTab = "week";
+              currentWeek = weekNum;
+              renderWeekNav();
+              renderDayNav();
+              renderMainContent();
+            };
+            container.appendChild(btn);
+          })(i);
         }
 
-        const logBtn = document.createElement("button");
+        var logBtn = document.createElement("button");
         logBtn.type = "button";
         logBtn.innerText = "Progression 📈";
         logBtn.className = "btn-log-tab" + (currentTab === "log" ? " active" : "");
-        logBtn.onclick = () => {
+        logBtn.onclick = function() {
           currentTab = "log";
           renderWeekNav();
           renderDayNav();
@@ -536,34 +528,34 @@
         };
         container.appendChild(logBtn);
 
-        const guideBtn = document.createElement("button");
+        var guideBtn = document.createElement("button");
         guideBtn.type = "button";
         guideBtn.innerText = "Guide 📖";
         guideBtn.className = "btn-guide";
-        guideBtn.onclick = () => {
+        guideBtn.onclick = function() {
           document.getElementById("guideModal").style.display = "block";
         };
         container.appendChild(guideBtn);
       }
 
       function renderDayNav() {
-        const container = document.getElementById("dayNav");
+        var container = document.getElementById("dayNav");
         if (currentTab === "log") {
           container.style.display = "none";
           return;
         }
         container.style.display = "flex";
         container.innerHTML = "";
-        days.forEach(day => {
-          const btn = document.createElement("button");
+        days.forEach(function(day) {
+          var btn = document.createElement("button");
           btn.type = "button";
-          const dayInfo = workoutData[day];
-          const badge = dayInfo.type === "c25k" ? "🏃" : "💪";
+          var dayInfo = workoutData[day];
+          var badge = dayInfo.type === "c25k" ? "🏃" : "💪";
 
-          btn.innerHTML = `${day}<span class="day-dot">${badge}</span>`;
+          btn.innerHTML = day + '<span class="day-dot">' + badge + "</span>";
           if (day === currentDay) btn.classList.add("active");
           if (day === todayDay && currentWeek === todayWeek) btn.classList.add("today-marker");
-          btn.onclick = () => {
+          btn.onclick = function() {
             currentDay = day;
             renderDayNav();
             renderMainContent();
@@ -573,14 +565,13 @@
       }
 
       function getKey(suffix) {
-        return `w${currentWeek}_${currentDay}_${suffix}`;
+        return "w" + currentWeek + "_" + currentDay + "_" + suffix;
       }
 
-      /* Progression Log Storage Helpers */
       function getProgressionLogs() {
         try {
-          const raw = getStorage("progression_logs", "[]");
-          const parsed = JSON.parse(raw);
+          var raw = getStorage("progression_logs", "[]");
+          var parsed = JSON.parse(raw);
           return Array.isArray(parsed) ? parsed : [];
         } catch (e) {
           return [];
@@ -592,89 +583,87 @@
       }
 
       function renderProgressionTab() {
-        const container = document.getElementById("workoutContent");
-        const logs = getProgressionLogs();
+        var container = document.getElementById("workoutContent");
+        var logs = getProgressionLogs();
 
-        // Build unique exercise list for filter dropdown
-        const exerciseSet = new Set(defaultExercises);
-        logs.forEach(item => {
-          if (item.exercise) exerciseSet.add(item.exercise);
+        var exerciseSet = {};
+        defaultExercises.forEach(function(ex) { exerciseSet[ex] = true; });
+        logs.forEach(function(item) {
+          if (item.exercise) exerciseSet[item.exercise] = true;
         });
-        const allExercises = Array.from(exerciseSet);
+        var allExercises = Object.keys(exerciseSet);
 
-        const filteredLogs = logFilterExercise === "ALL"
+        var filteredLogs = logFilterExercise === "ALL"
           ? logs
-          : logs.filter(item => item.exercise.toLowerCase() === logFilterExercise.toLowerCase());
+          : logs.filter(function(item) { return item.exercise.toLowerCase() === logFilterExercise.toLowerCase(); });
 
-        let datalistOptions = defaultExercises
-          .map(ex => `<option value="${escapeHtml(ex)}">`)
+        var datalistOptions = defaultExercises
+          .map(function(ex) { return '<option value="' + escapeHtml(ex) + '">'; })
           .join("");
 
-        let filterOptions = `<option value="ALL" ${logFilterExercise === "ALL" ? "selected" : ""}>All Exercises (${logs.length})</option>`;
-        allExercises.forEach(ex => {
-          const count = logs.filter(l => l.exercise.toLowerCase() === ex.toLowerCase()).length;
+        var filterOptions = '<option value="ALL"' + (logFilterExercise === "ALL" ? " selected" : "") + ">All Exercises (" + logs.length + ")</option>";
+        allExercises.forEach(function(ex) {
+          var count = logs.filter(function(l) { return l.exercise.toLowerCase() === ex.toLowerCase(); }).length;
           if (count > 0) {
-            filterOptions += `<option value="${escapeHtml(ex)}" ${logFilterExercise === ex ? "selected" : ""}>${escapeHtml(ex)} (${count})</option>`;
+            filterOptions += '<option value="' + escapeHtml(ex) + '"' + (logFilterExercise === ex ? " selected" : "") + ">" + escapeHtml(ex) + " (" + count + ")</option>";
           }
         });
 
-        let entriesHtml = "";
+        var entriesHtml = "";
         if (filteredLogs.length === 0) {
-          entriesHtml = `<div class="empty-state">No progression entries yet. Log your first set above to start tracking your progress!</div>`;
+          entriesHtml = '<div class="empty-state">No progression entries yet. Log your first set above to start tracking your progress!</div>';
         } else {
-          entriesHtml = filteredLogs.map(entry => `
-            <div class="log-entry">
-              <div style="flex: 1; min-width: 0;">
-                <div class="log-entry-header">
-                  <span class="log-exercise">${escapeHtml(entry.exercise)}</span>
-                  <span class="log-date">${escapeHtml(entry.date)}</span>
-                </div>
-                <div class="log-notes">${escapeHtml(entry.notes)}</div>
-              </div>
-              <button type="button" class="btn-delete-log" data-id="${escapeHtml(entry.id)}" title="Delete entry">✕</button>
-            </div>
-          `).join("");
+          entriesHtml = filteredLogs.map(function(entry) {
+            return (
+              '<div class="log-entry">' +
+                '<div style="flex: 1; min-width: 0;">' +
+                  '<div class="log-entry-header">' +
+                    '<span class="log-exercise">' + escapeHtml(entry.exercise) + "</span>" +
+                    '<span class="log-date">' + escapeHtml(entry.date) + "</span>" +
+                  "</div>" +
+                  '<div class="log-notes">' + escapeHtml(entry.notes) + "</div>" +
+                "</div>" +
+                '<button type="button" class="btn-delete-log" data-id="' + escapeHtml(entry.id) + '" title="Delete entry">✕</button>' +
+              "</div>"
+            );
+          }).join("");
         }
 
-        container.innerHTML = `
-          <div class="card">
-            <div class="card-title">
-              <span>Log Exercise Progression</span>
-              <span class="tag">History</span>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="logDateInput">Date</label>
-                <input type="date" id="logDateInput" class="form-input" value="${getTodayISO()}">
-              </div>
-              <div class="form-group">
-                <label for="logExerciseInput">Exercise</label>
-                <input type="text" id="logExerciseInput" list="exerciseSuggestions" class="form-input" placeholder="e.g. Pull-Ups (Banded)">
-                <datalist id="exerciseSuggestions">${datalistOptions}</datalist>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="logNotesInput">Weight + Reps / Notes</label>
-              <textarea id="logNotesInput" class="form-textarea" placeholder="e.g. BW (black band) • 8, 7, 6 reps — felt strong, clean form"></textarea>
-            </div>
-            <button type="button" class="btn-primary" id="saveLogEntryBtn">+ Add Progression Entry</button>
-          </div>
+        container.innerHTML =
+          '<div class="card">' +
+            '<div class="card-title">' +
+              "<span>Log Exercise Progression</span>" +
+              '<span class="tag">History</span>' +
+            "</div>" +
+            '<div class="form-row">' +
+              '<div class="form-group">' +
+                '<label for="logDateInput">Date</label>' +
+                '<input type="date" id="logDateInput" class="form-input" value="' + getTodayISO() + '">' +
+              "</div>" +
+              '<div class="form-group">' +
+                '<label for="logExerciseInput">Exercise</label>' +
+                '<input type="text" id="logExerciseInput" list="exerciseSuggestions" class="form-input" placeholder="e.g. Pull-Ups (Banded)">' +
+                '<datalist id="exerciseSuggestions">' + datalistOptions + "</datalist>" +
+              "</div>" +
+            "</div>" +
+            '<div class="form-group">' +
+              '<label for="logNotesInput">Weight + Reps / Notes</label>' +
+              '<textarea id="logNotesInput" class="form-textarea" placeholder="e.g. BW (black band) • 8, 7, 6 reps — felt strong, clean form"></textarea>' +
+            "</div>" +
+            '<button type="button" class="btn-primary" id="saveLogEntryBtn">+ Add Progression Entry</button>' +
+          "</div>" +
+          '<div class="card">' +
+            '<div class="filter-bar">' +
+              '<span style="font-weight: bold; font-size: 1rem;">Past Logs</span>' +
+              '<select id="logFilterSelect" class="filter-select">' + filterOptions + "</select>" +
+            "</div>" +
+            '<div id="logEntriesList">' + entriesHtml + "</div>" +
+          "</div>";
 
-          <div class="card">
-            <div class="filter-bar">
-              <span style="font-weight: bold; font-size: 1rem;">Past Logs</span>
-              <select id="logFilterSelect" class="filter-select">
-                ${filterOptions}
-              </select>
-            </div>
-            <div id="logEntriesList">${entriesHtml}</div>
-          </div>
-        `;
-
-        document.getElementById("saveLogEntryBtn").addEventListener("click", () => {
-          const dateVal = document.getElementById("logDateInput").value || getTodayISO();
-          const exerciseVal = document.getElementById("logExerciseInput").value.trim();
-          const notesVal = document.getElementById("logNotesInput").value.trim();
+        document.getElementById("saveLogEntryBtn").addEventListener("click", function() {
+          var dateVal = document.getElementById("logDateInput").value || getTodayISO();
+          var exerciseVal = document.getElementById("logExerciseInput").value.trim();
+          var notesVal = document.getElementById("logNotesInput").value.trim();
 
           if (!exerciseVal) {
             document.getElementById("logExerciseInput").focus();
@@ -685,15 +674,14 @@
             return;
           }
 
-          const updatedLogs = getProgressionLogs();
+          var updatedLogs = getProgressionLogs();
           updatedLogs.unshift({
             id: String(Date.now()) + "_" + Math.random().toString(36).slice(2, 6),
             date: dateVal,
             exercise: exerciseVal,
             notes: notesVal
           });
-          // Sort newest date first
-          updatedLogs.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+          updatedLogs.sort(function(a, b) { return (b.date || "").localeCompare(a.date || ""); });
           saveProgressionLogs(updatedLogs);
           renderProgressionTab();
         });
@@ -703,10 +691,10 @@
           renderProgressionTab();
         });
 
-        container.querySelectorAll(".btn-delete-log").forEach(btn => {
+        container.querySelectorAll(".btn-delete-log").forEach(function(btn) {
           btn.addEventListener("click", function() {
-            const targetId = this.dataset.id;
-            const remaining = getProgressionLogs().filter(item => item.id !== targetId);
+            var targetId = this.dataset.id;
+            var remaining = getProgressionLogs().filter(function(item) { return item.id !== targetId; });
             saveProgressionLogs(remaining);
             renderProgressionTab();
           });
@@ -719,140 +707,143 @@
           return;
         }
 
-        const container = document.getElementById("workoutContent");
-        const data = workoutData[currentDay];
+        var container = document.getElementById("workoutContent");
+        var data = workoutData[currentDay];
 
-        const c25kKey = getKey("c25k");
-        const jacksKey = getKey("jacks");
-        const postureKey = getKey("posture");
-        const invKey = getKey("inversion");
-        const massageKey = getKey("massage");
+        var c25kKey = getKey("c25k");
+        var jacksKey = getKey("jacks");
+        var postureKey = getKey("posture");
+        var invKey = getKey("inversion");
+        var massageKey = getKey("massage");
 
-        const isC25kChecked = getStorage(c25kKey, "false") === "true";
-        const isJacksChecked = getStorage(jacksKey, "false") === "true";
-        const isPostureChecked = getStorage(postureKey, "false") === "true";
-        const isInvChecked = getStorage(invKey, "false") === "true";
-        const isMassageChecked = getStorage(massageKey, "false") === "true";
+        var isC25kChecked = getStorage(c25kKey, "false") === "true";
+        var isJacksChecked = getStorage(jacksKey, "false") === "true";
+        var isPostureChecked = getStorage(postureKey, "false") === "true";
+        var isInvChecked = getStorage(invKey, "false") === "true";
+        var isMassageChecked = getStorage(massageKey, "false") === "true";
 
-        let html = `
-          <div class="card">
-            <div class="card-title">
-              <span>${data.name}</span>
-              <span class="tag">${data.tag}</span>
-            </div>
+        var html =
+          '<div class="card">' +
+            '<div class="card-title">' +
+              "<span>" + data.name + "</span>" +
+              '<span class="tag">' + data.tag + "</span>" +
+            "</div>";
 
-            ${data.type === "c25k" ? `
-            <div class="checklist-item">
-              <input type="checkbox" id="c25kCheck" data-key="${c25kKey}" ${isC25kChecked ? "checked" : ""}>
-              <label for="c25kCheck"><b>C25K Session</b></label>
-            </div>
-            ` : ""}
+        if (data.type === "c25k") {
+          html +=
+            '<div class="checklist-item">' +
+              '<input type="checkbox" id="c25kCheck" data-key="' + c25kKey + '"' + (isC25kChecked ? " checked" : "") + ">" +
+              '<label for="c25kCheck"><b>C25K Session</b></label>' +
+            "</div>";
+        }
 
-            ${data.type === "workout" ? `
-            <div class="checklist-item">
-              <input type="checkbox" id="jacksCheck" data-key="${jacksKey}" ${isJacksChecked ? "checked" : ""}>
-              <label for="jacksCheck">100 Jumping Jacks</label>
-            </div>
-            ` : ""}
+        if (data.type === "workout") {
+          html +=
+            '<div class="checklist-item">' +
+              '<input type="checkbox" id="jacksCheck" data-key="' + jacksKey + '"' + (isJacksChecked ? " checked" : "") + ">" +
+              '<label for="jacksCheck">100 Jumping Jacks</label>' +
+            "</div>";
+        }
 
-            <div class="checklist-item">
-              <input type="checkbox" id="postureCheck" data-key="${postureKey}" ${isPostureChecked ? "checked" : ""}>
-              <label for="postureCheck">Posture Routine <a class="ext-link" href="https://www.youtube.com/watch?v=XWQvmh_INTQ" target="_blank">YouTube ↗</a></label>
-            </div>
-
-            <div class="checklist-item">
-              <input type="checkbox" id="invCheck" data-key="${invKey}" ${isInvChecked ? "checked" : ""}>
-              <label for="invCheck">Inversion Table Decompression (3-5 mins)</label>
-            </div>
-
-            <div class="checklist-item">
-              <input type="checkbox" id="massageCheck" data-key="${massageKey}" ${isMassageChecked ? "checked" : ""}>
-              <label for="massageCheck">15-Minute Massage Chair Session</label>
-            </div>
-          </div>
-        `;
+        html +=
+          '<div class="checklist-item">' +
+            '<input type="checkbox" id="postureCheck" data-key="' + postureKey + '"' + (isPostureChecked ? " checked" : "") + ">" +
+            '<label for="postureCheck">Posture Routine <a class="ext-link" href="https://www.youtube.com/watch?v=XWQvmh_INTQ" target="_blank">YouTube ↗</a></label>' +
+          "</div>" +
+          '<div class="checklist-item">' +
+            '<input type="checkbox" id="invCheck" data-key="' + invKey + '"' + (isInvChecked ? " checked" : "") + ">" +
+            '<label for="invCheck">Inversion Table Decompression (3-5 mins)</label>' +
+          "</div>" +
+          '<div class="checklist-item">' +
+            '<input type="checkbox" id="massageCheck" data-key="' + massageKey + '"' + (isMassageChecked ? " checked" : "") + ">" +
+            '<label for="massageCheck">15-Minute Massage Chair Session</label>' +
+          "</div>" +
+        "</div>";
 
         if (data.moves.length > 0) {
-          html += `<div class="card"><div class="card-title">Circuit Exercises</div>`;
-          data.moves.forEach((move, mIdx) => {
-            html += `
-              <div class="exercise-block">
-                <div class="exercise-header">
-                  <span>${move.name}</span>
-                  <span class="target-hint">${move.target}</span>
-                </div>
-                <div class="sets-grid">
-            `;
-            for (let setNum = 1; setNum <= 3; setNum++) {
-              const setKey = getKey(`m${mIdx}_s${setNum}`);
-              const val = getStorage(setKey, "0");
+          html += '<div class="card"><div class="card-title">Circuit Exercises</div>';
+          data.moves.forEach(function(move, mIdx) {
+            html +=
+              '<div class="exercise-block">' +
+                '<div class="exercise-header">' +
+                  "<span>" + move.name + "</span>" +
+                  '<span class="target-hint">' + move.target + "</span>" +
+                "</div>" +
+                '<div class="sets-grid">';
 
-              const max = move.max || 30;
-              const step = move.step || 1;
+            for (var setNum = 1; setNum <= 3; setNum++) {
+              var setKey = getKey("m" + mIdx + "_s" + setNum);
+              var val = getStorage(setKey, "0");
 
-              let optionsHtml = `<option value="0" ${val === "0" ? "selected" : ""}>-</option>`;
-              for (let i = step; i <= max; i += step) {
-                optionsHtml += `<option value="${i}" ${String(val) === String(i) ? "selected" : ""}>${i}</option>`;
+              var max = move.max || 30;
+              var step = move.step || 1;
+
+              var optionsHtml = '<option value="0"' + (val === "0" ? " selected" : "") + ">-</option>";
+              for (var i = step; i <= max; i += step) {
+                optionsHtml += '<option value="' + i + '"' + (String(val) === String(i) ? " selected" : "") + ">" + i + "</option>";
               }
 
-              html += `
-                <div class="set-box">
-                  <label>SET ${setNum}</label>
-                  <select data-key="${setKey}">
-                    ${optionsHtml}
-                  </select>
-                </div>
-              `;
+              html +=
+                '<div class="set-box">' +
+                  "<label>SET " + setNum + "</label>" +
+                  '<select data-key="' + setKey + '">' + optionsHtml + "</select>" +
+                "</div>";
             }
-            html += `</div></div>`;
+            html += "</div></div>";
           });
-          html += `</div>`;
+          html += "</div>";
         }
 
         container.innerHTML = html;
 
-        container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        container.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
           cb.addEventListener("change", function() {
             setStorage(this.dataset.key, this.checked);
           });
         });
 
-        container.querySelectorAll("select").forEach(sel => {
+        container.querySelectorAll("select").forEach(function(sel) {
           sel.addEventListener("change", function() {
             setStorage(this.dataset.key, this.value);
           });
         });
       }
 
-      /* Wire up static buttons */
-      document.querySelectorAll(".timer-btns button[data-sec]").forEach(btn => {
-        btn.addEventListener("click", () => startTimer(Number(btn.dataset.sec)));
+      document.querySelectorAll(".timer-btns button[data-sec]").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          startTimer(Number(btn.dataset.sec));
+        });
       });
       document.getElementById("stopTimerBtn").addEventListener("click", stopTimer);
 
-      document.getElementById("resetBtn").addEventListener("click", () => {
+      document.getElementById("resetBtn").addEventListener("click", function() {
         document.getElementById("resetModal").style.display = "block";
       });
-      document.getElementById("cancelResetBtn").addEventListener("click", () => {
+      document.getElementById("cancelResetBtn").addEventListener("click", function() {
         document.getElementById("resetModal").style.display = "none";
       });
-      document.getElementById("confirmResetBtn").addEventListener("click", () => {
+      document.getElementById("confirmResetBtn").addEventListener("click", function() {
         clearStorage();
         document.getElementById("resetModal").style.display = "none";
         renderDayNav();
         renderMainContent();
       });
 
-      document.getElementById("closeGuideBtn").addEventListener("click", () => {
+      document.getElementById("closeGuideBtn").addEventListener("click", function() {
         document.getElementById("guideModal").style.display = "none";
       });
 
-      /* Initialize immediately */
       autoDetectDate();
       renderWeekNav();
       renderDayNav();
       renderMainContent();
-    })();
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", startApp);
+    } else {
+      startApp();
+    }
   </script>
 </body>
 </html>
