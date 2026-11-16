@@ -104,7 +104,7 @@
   <!-- Main Content Card -->
   <div id="workoutContent"></div>
 
-  <button class="btn-reset" onclick="openResetModal()">Reset All Progress</button>
+  <button class="btn-reset" id="resetBtn">Reset All Progress</button>
 
   <!-- Sticky Rest Timer Bar -->
   <div class="timer-bar">
@@ -113,10 +113,10 @@
       <span id="timerDisplay">Ready</span>
     </div>
     <div class="timer-btns">
-      <button onclick="startTimer(60)">60s</button>
-      <button onclick="startTimer(90)">90s</button>
-      <button onclick="startTimer(120)">2m</button>
-      <button class="stop-btn" onclick="stopTimer()">Reset</button>
+      <button type="button" data-sec="60">60s</button>
+      <button type="button" data-sec="90">90s</button>
+      <button type="button" data-sec="120">2m</button>
+      <button type="button" class="stop-btn" id="stopTimerBtn">Reset</button>
     </div>
   </div>
 
@@ -128,8 +128,8 @@
         This will permanently clear all tracked sets and checklist items across all 4 weeks.
       </p>
       <div class="reset-modal-btns">
-        <button class="btn-cancel" onclick="closeResetModal()">Cancel</button>
-        <button class="btn-confirm-danger" onclick="executeReset()">Yes, Wipe Everything</button>
+        <button type="button" class="btn-cancel" id="cancelResetBtn">Cancel</button>
+        <button type="button" class="btn-confirm-danger" id="confirmResetBtn">Yes, Wipe Everything</button>
       </div>
     </div>
   </div>
@@ -137,7 +137,7 @@
   <!-- Exercise Form Guide Modal -->
   <div class="modal-overlay" id="guideModal">
     <div class="modal-content">
-      <button class="modal-close" onclick="toggleModal(false)">×</button>
+      <button type="button" class="modal-close" id="closeGuideBtn">×</button>
       <h2 style="color: var(--accent); margin-bottom: 1rem;">Exercise Form Guides</h2>
 
       <div class="guide-item">
@@ -267,252 +267,382 @@
   </div>
 
   <script>
-    const workoutData = {
-      Mon: {
-        name: "Workout 1 — Dip Focus",
-        tag: "Strength",
-        type: "workout",
-        moves: [
-          { name: "Pull-Ups (Banded)", target: "Aim for 5–8 reps", max: 30 },
-          { name: "Dips (Banded)", target: "Aim for 5–8 reps", max: 30 },
-          { name: "DB Lateral Raises (8 lb)", target: "Aim for 15–25 reps", max: 30 },
-          { name: "Hanging Leg Raises", target: "Aim for 8–12 reps", max: 30 }
-        ]
-      },
-      Tue: {
-        name: "C25K — Run 1",
-        tag: "Cardio",
-        type: "c25k",
-        moves: []
-      },
-      Wed: {
-        name: "Workout 2 — Push-Up Focus",
-        tag: "Strength",
-        type: "workout",
-        moves: [
-          { name: "Chin-Ups (Banded)", target: "Aim for 5–8 reps", max: 30 },
-          { name: "Deficit Push-Ups", target: "Aim for 8–15 reps", max: 30 },
-          { name: "DB Rear Delt Flyes (8 lb)", target: "Aim for 15–25 reps", max: 30 },
-          { name: "Plank Hold", target: "Aim for 45–60 secs", max: 90, step: 5 }
-        ]
-      },
-      Thu: {
-        name: "Workout 3 — Form & Squeeze",
-        tag: "Strength",
-        type: "workout",
-        moves: [
-          { name: "Pull-Ups (Banded)", target: "Aim for 5–8 smooth reps", max: 30 },
-          { name: "Deficit Push-Ups", target: "Aim for 8–12 smooth reps", max: 30 },
-          { name: "DB Lateral Raises (8 lb)", target: "Aim for 15–20 slow reps", max: 30 },
-          { name: "Hanging Leg Raises", target: "Aim for 8–10 smooth reps", max: 30 }
-        ]
-      },
-      Fri: {
-        name: "C25K — Run 2",
-        tag: "Cardio",
-        type: "c25k",
-        moves: []
-      },
-      Sat: {
-        name: "Workout 4 — Active Light Reset",
-        tag: "Strength",
-        type: "workout",
-        moves: [
-          { name: "Light Deficit Push-Ups", target: "Aim for 8–10 easy reps", max: 30 },
-          { name: "Light Banded Pull-Ups", target: "Aim for 8–10 easy reps", max: 30 }
-        ]
-      },
-      Sun: {
-        name: "C25K — Run 3",
-        tag: "Cardio",
-        type: "c25k",
-        moves: []
-      }
-    };
+    (function() {
+      const memoryFallback = {};
 
-    const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-    const jsDayMap = { 0: "Sun", 1: "Mon", 2: "Tue", 3: "Wed", 4: "Thu", 5: "Fri", 6: "Sat" };
-
-    let currentWeek = 1;
-    let currentDay = "Mon";
-    let todayWeek = 1;
-    let todayDay = "Mon";
-
-    /* Audio Context Initialization */
-    let audioCtx = null;
-
-    function initAudio() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-    }
-
-    function playBeep(freq, duration, delay = 0) {
-      if (!audioCtx) return;
-      setTimeout(() => {
+      function getStorage(key, defaultVal) {
         try {
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-          gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
-          osc.start();
-          osc.stop(audioCtx.currentTime + duration);
-        } catch(e) {}
-      }, delay);
-    }
-
-    /* Rest Timer Script */
-    let timerInterval = null;
-    let timeLeft = 0;
-
-    function startTimer(seconds) {
-      initAudio();
-      clearInterval(timerInterval);
-      timeLeft = seconds;
-      updateTimerDisplay();
-
-      timerInterval = setInterval(() => {
-        timeLeft--;
-        if (timeLeft <= 0) {
-          clearInterval(timerInterval);
-          document.getElementById("timerDisplay").innerText = "TIME UP! 🎉";
-          playBeep(880, 0.15, 0);
-          playBeep(880, 0.15, 200);
-          playBeep(1200, 0.4, 400);
-        } else {
-          updateTimerDisplay();
+          const val = window.localStorage.getItem(key);
+          return val !== null ? val : defaultVal;
+        } catch (e) {
+          return Object.prototype.hasOwnProperty.call(memoryFallback, key) ? memoryFallback[key] : defaultVal;
         }
-      }, 1000);
-    }
+      }
 
-    function updateTimerDisplay() {
-      const mins = Math.floor(timeLeft / 60);
-      const secs = timeLeft % 60;
-      document.getElementById("timerDisplay").innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-    }
+      function setStorage(key, val) {
+        try {
+          window.localStorage.setItem(key, String(val));
+        } catch (e) {
+          memoryFallback[key] = String(val);
+        }
+      }
 
-    function stopTimer() {
-      clearInterval(timerInterval);
-      document.getElementById("timerDisplay").innerText = "Ready";
-    }
+      function clearStorage() {
+        try {
+          window.localStorage.clear();
+        } catch (e) {}
+        for (const k in memoryFallback) {
+          if (Object.prototype.hasOwnProperty.call(memoryFallback, k)) {
+            delete memoryFallback[k];
+          }
+        }
+      }
 
-    function autoDetectDate() {
-      const now = new Date();
-      todayDay = jsDayMap[now.getDay()];
-      const dayOfMonth = now.getDate();
-      todayWeek = Math.min(Math.ceil(dayOfMonth / 7), 4);
+      const workoutData = {
+        Mon: {
+          name: "Workout 1 — Dip Focus",
+          tag: "Strength",
+          type: "workout",
+          moves: [
+            { name: "Pull-Ups (Banded)", target: "Aim for 5–8 reps", max: 30 },
+            { name: "Dips (Banded)", target: "Aim for 5–8 reps", max: 30 },
+            { name: "DB Lateral Raises (8 lb)", target: "Aim for 15–25 reps", max: 30 },
+            { name: "Hanging Leg Raises", target: "Aim for 8–12 reps", max: 30 }
+          ]
+        },
+        Tue: {
+          name: "C25K — Run 1",
+          tag: "Cardio",
+          type: "c25k",
+          moves: []
+        },
+        Wed: {
+          name: "Workout 2 — Push-Up Focus",
+          tag: "Strength",
+          type: "workout",
+          moves: [
+            { name: "Chin-Ups (Banded)", target: "Aim for 5–8 reps", max: 30 },
+            { name: "Deficit Push-Ups", target: "Aim for 8–15 reps", max: 30 },
+            { name: "DB Rear Delt Flyes (8 lb)", target: "Aim for 15–25 reps", max: 30 },
+            { name: "Plank Hold", target: "Aim for 45–60 secs", max: 90, step: 5 }
+          ]
+        },
+        Thu: {
+          name: "Workout 3 — Form & Squeeze",
+          tag: "Strength",
+          type: "workout",
+          moves: [
+            { name: "Pull-Ups (Banded)", target: "Aim for 5–8 smooth reps", max: 30 },
+            { name: "Deficit Push-Ups", target: "Aim for 8–12 smooth reps", max: 30 },
+            { name: "DB Lateral Raises (8 lb)", target: "Aim for 15–20 slow reps", max: 30 },
+            { name: "Hanging Leg Raises", target: "Aim for 8–10 smooth reps", max: 30 }
+          ]
+        },
+        Fri: {
+          name: "C25K — Run 2",
+          tag: "Cardio",
+          type: "c25k",
+          moves: []
+        },
+        Sat: {
+          name: "Workout 4 — Active Light Reset",
+          tag: "Strength",
+          type: "workout",
+          moves: [
+            { name: "Light Deficit Push-Ups", target: "Aim for 8–10 easy reps", max: 30 },
+            { name: "Light Banded Pull-Ups", target: "Aim for 8–10 easy reps", max: 30 }
+          ]
+        },
+        Sun: {
+          name: "C25K — Run 3",
+          tag: "Cardio",
+          type: "c25k",
+          moves: []
+        }
+      };
 
-      currentWeek = todayWeek;
-      currentDay = todayDay;
+      const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+      const jsDayMap = { 0: "Sun", 1: "Mon", 2: "Tue", 3: "Wed", 4: "Thu", 5: "Fri", 6: "Sat" };
 
-      const options = { month: 'short', day: 'numeric', weekday: 'short' };
-      document.getElementById("dateBadge").innerText = `Today: ${now.toLocaleDateString(undefined, options)} (W${todayWeek})`;
-    }
+      let currentWeek = 1;
+      let currentDay = "Mon";
+      let todayWeek = 1;
+      let todayDay = "Mon";
 
-    function init() {
+      /* Audio Context Initialization */
+      let audioCtx = null;
+
+      function initAudio() {
+        try {
+          if (!audioCtx) {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (AudioContextClass) audioCtx = new AudioContextClass();
+          }
+          if (audioCtx && audioCtx.state === "suspended") {
+            audioCtx.resume();
+          }
+        } catch (e) {}
+      }
+
+      function playBeep(freq, duration, delay) {
+        if (!audioCtx) return;
+        setTimeout(() => {
+          try {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+          } catch (e) {}
+        }, delay || 0);
+      }
+
+      /* Rest Timer */
+      let timerInterval = null;
+      let timeLeft = 0;
+
+      function startTimer(seconds) {
+        initAudio();
+        clearInterval(timerInterval);
+        timeLeft = seconds;
+        updateTimerDisplay();
+
+        timerInterval = setInterval(() => {
+          timeLeft--;
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            document.getElementById("timerDisplay").innerText = "TIME UP! 🎉";
+            playBeep(880, 0.15, 0);
+            playBeep(880, 0.15, 200);
+            playBeep(1200, 0.4, 400);
+          } else {
+            updateTimerDisplay();
+          }
+        }, 1000);
+      }
+
+      function updateTimerDisplay() {
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        document.getElementById("timerDisplay").innerText = `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+      }
+
+      function stopTimer() {
+        clearInterval(timerInterval);
+        document.getElementById("timerDisplay").innerText = "Ready";
+      }
+
+      function autoDetectDate() {
+        const now = new Date();
+        todayDay = jsDayMap[now.getDay()] || "Mon";
+        const dayOfMonth = now.getDate();
+        todayWeek = Math.min(Math.ceil(dayOfMonth / 7), 4);
+
+        currentWeek = todayWeek;
+        currentDay = todayDay;
+
+        const options = { month: "short", day: "numeric", weekday: "short" };
+        document.getElementById("dateBadge").innerText = `Today: ${now.toLocaleDateString(undefined, options)} (W${todayWeek})`;
+      }
+
+      function renderWeekNav() {
+        const container = document.getElementById("weekNav");
+        container.innerHTML = "";
+        for (let i = 1; i <= 4; i++) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.innerText = `Week ${i}`;
+          if (i === currentWeek) btn.classList.add("active");
+          btn.onclick = () => {
+            currentWeek = i;
+            renderWeekNav();
+            renderDayNav();
+            renderWorkout();
+          };
+          container.appendChild(btn);
+        }
+
+        const guideBtn = document.createElement("button");
+        guideBtn.type = "button";
+        guideBtn.innerText = "Exercise Guide 📖";
+        guideBtn.className = "btn-guide";
+        guideBtn.onclick = () => {
+          document.getElementById("guideModal").style.display = "block";
+        };
+        container.appendChild(guideBtn);
+      }
+
+      function renderDayNav() {
+        const container = document.getElementById("dayNav");
+        container.innerHTML = "";
+        days.forEach(day => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          const dayInfo = workoutData[day];
+          const badge = dayInfo.type === "c25k" ? "🏃" : "💪";
+
+          btn.innerHTML = `${day}<span class="day-dot">${badge}</span>`;
+          if (day === currentDay) btn.classList.add("active");
+          if (day === todayDay && currentWeek === todayWeek) btn.classList.add("today-marker");
+          btn.onclick = () => {
+            currentDay = day;
+            renderDayNav();
+            renderWorkout();
+          };
+          container.appendChild(btn);
+        });
+      }
+
+      function getKey(suffix) {
+        return `w${currentWeek}_${currentDay}_${suffix}`;
+      }
+
+      function renderWorkout() {
+        const container = document.getElementById("workoutContent");
+        const data = workoutData[currentDay];
+
+        const c25kKey = getKey("c25k");
+        const walkKey = getKey("walk");
+        const jacksKey = getKey("jacks");
+        const postureKey = getKey("posture");
+        const invKey = getKey("inversion");
+        const massageKey = getKey("massage");
+
+        const isC25kChecked = getStorage(c25kKey, "false") === "true";
+        const isWalkChecked = getStorage(walkKey, "false") === "true";
+        const isJacksChecked = getStorage(jacksKey, "false") === "true";
+        const isPostureChecked = getStorage(postureKey, "false") === "true";
+        const isInvChecked = getStorage(invKey, "false") === "true";
+        const isMassageChecked = getStorage(massageKey, "false") === "true";
+
+        let html = `
+          <div class="card">
+            <div class="card-title">
+              <span>${data.name}</span>
+              <span class="tag">${data.tag}</span>
+            </div>
+
+            ${data.type === "c25k" ? `
+            <div class="checklist-item">
+              <input type="checkbox" id="c25kCheck" data-key="${c25kKey}" ${isC25kChecked ? "checked" : ""}>
+              <label for="c25kCheck"><b>C25K Treadmill Session</b> (1.0% Incline • Week ${currentWeek})</label>
+            </div>
+            <div class="checklist-item">
+              <input type="checkbox" id="walkCheck" data-key="${walkKey}" ${isWalkChecked ? "checked" : ""}>
+              <label for="walkCheck">30-Minute Daily Walk</label>
+            </div>
+            ` : ""}
+
+            ${data.type === "workout" ? `
+            <div class="checklist-item">
+              <input type="checkbox" id="jacksCheck" data-key="${jacksKey}" ${isJacksChecked ? "checked" : ""}>
+              <label for="jacksCheck">100 Jumping Jacks</label>
+            </div>
+            ` : ""}
+
+            <div class="checklist-item">
+              <input type="checkbox" id="postureCheck" data-key="${postureKey}" ${isPostureChecked ? "checked" : ""}>
+              <label for="postureCheck">Posture Routine <a class="ext-link" href="https://www.youtube.com/watch?v=XWQvmh_INTQ" target="_blank">YouTube ↗</a></label>
+            </div>
+
+            <div class="checklist-item">
+              <input type="checkbox" id="invCheck" data-key="${invKey}" ${isInvChecked ? "checked" : ""}>
+              <label for="invCheck">Inversion Table Decompression (3-5 mins)</label>
+            </div>
+
+            <div class="checklist-item">
+              <input type="checkbox" id="massageCheck" data-key="${massageKey}" ${isMassageChecked ? "checked" : ""}>
+              <label for="massageCheck">15-Minute Massage Chair Session</label>
+            </div>
+          </div>
+        `;
+
+        if (data.moves.length > 0) {
+          html += `<div class="card"><div class="card-title">Circuit Exercises</div>`;
+          data.moves.forEach((move, mIdx) => {
+            html += `
+              <div class="exercise-block">
+                <div class="exercise-header">
+                  <span>${move.name}</span>
+                  <span class="target-hint">${move.target}</span>
+                </div>
+                <div class="sets-grid">
+            `;
+            for (let setNum = 1; setNum <= 3; setNum++) {
+              const setKey = getKey(`m${mIdx}_s${setNum}`);
+              const val = getStorage(setKey, "0");
+
+              const max = move.max || 30;
+              const step = move.step || 1;
+
+              let optionsHtml = `<option value="0" ${val === "0" ? "selected" : ""}>-</option>`;
+              for (let i = step; i <= max; i += step) {
+                optionsHtml += `<option value="${i}" ${String(val) === String(i) ? "selected" : ""}>${i}</option>`;
+              }
+
+              html += `
+                <div class="set-box">
+                  <label>SET ${setNum}</label>
+                  <select data-key="${setKey}">
+                    ${optionsHtml}
+                  </select>
+                </div>
+              `;
+            }
+            html += `</div></div>`;
+          });
+          html += `</div>`;
+        }
+
+        container.innerHTML = html;
+
+        container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+          cb.addEventListener("change", function() {
+            setStorage(this.dataset.key, this.checked);
+          });
+        });
+
+        container.querySelectorAll("select").forEach(sel => {
+          sel.addEventListener("change", function() {
+            setStorage(this.dataset.key, this.value);
+          });
+        });
+      }
+
+      /* Wire up static buttons */
+      document.querySelectorAll(".timer-btns button[data-sec]").forEach(btn => {
+        btn.addEventListener("click", () => startTimer(Number(btn.dataset.sec)));
+      });
+      document.getElementById("stopTimerBtn").addEventListener("click", stopTimer);
+
+      document.getElementById("resetBtn").addEventListener("click", () => {
+        document.getElementById("resetModal").style.display = "block";
+      });
+      document.getElementById("cancelResetBtn").addEventListener("click", () => {
+        document.getElementById("resetModal").style.display = "none";
+      });
+      document.getElementById("confirmResetBtn").addEventListener("click", () => {
+        clearStorage();
+        document.getElementById("resetModal").style.display = "none";
+        renderDayNav();
+        renderWorkout();
+      });
+
+      document.getElementById("closeGuideBtn").addEventListener("click", () => {
+        document.getElementById("guideModal").style.display = "none";
+      });
+
+      /* Initialize immediately */
       autoDetectDate();
       renderWeekNav();
       renderDayNav();
       renderWorkout();
-    }
-
-    function renderWeekNav() {
-      const container = document.getElementById("weekNav");
-      container.innerHTML = "";
-      for (let i = 1; i <= 4; i++) {
-        const btn = document.createElement("button");
-        btn.innerText = `Week ${i}`; if (i === currentWeek) btn.classList.add("active"); btn.onclick = () => { currentWeek = i; renderWeekNav(); renderDayNav(); renderWorkout(); }; container.appendChild(btn); }  const guideBtn = document.createElement("button"); guideBtn.innerText = "Exercise Guide 📖"; guideBtn.className = "btn-guide"; guideBtn.onclick = () => toggleModal(true); container.appendChild(guideBtn); }  function toggleModal(show) { document.getElementById("guideModal").style.display = show ? "block" : "none"; }  function openResetModal() { document.getElementById("resetModal").style.display = "block"; }  function closeResetModal() { document.getElementById("resetModal").style.display = "none"; }  function executeReset() { try { localStorage.clear(); } catch(e) {} closeResetModal(); renderDayNav(); renderWorkout(); }  function renderDayNav() { const container = document.getElementById("dayNav"); container.innerHTML = ""; days.forEach(day => { const btn = document.createElement("button"); const dayInfo = workoutData[day]; const badge = dayInfo.type === "c25k" ? "🏃" : "💪";  btn.innerHTML = `${day}<span class="day-dot">${badge}</span>`; if (day === currentDay) btn.classList.add("active"); if (day === todayDay && currentWeek === todayWeek) btn.classList.add("today-marker"); btn.onclick = () => { currentDay = day; renderDayNav(); renderWorkout(); }; container.appendChild(btn); }); }  function getKey(suffix) { return `w${currentWeek}_${currentDay}_${suffix}`;
-    }
-
-    function renderWorkout() {
-      const container = document.getElementById("workoutContent");
-      const data = workoutData[currentDay];
-
-      const c25kKey = getKey("c25k");
-      const walkKey = getKey("walk");
-      const jacksKey = getKey("jacks");
-      const postureKey = getKey("posture");
-      const invKey = getKey("inversion");
-      const massageKey = getKey("massage");
-
-      const isC25kChecked = localStorage.getItem(c25kKey) === "true";
-      const isWalkChecked = localStorage.getItem(walkKey) === "true";
-      const isJacksChecked = localStorage.getItem(jacksKey) === "true";
-      const isPostureChecked = localStorage.getItem(postureKey) === "true";
-      const isInvChecked = localStorage.getItem(invKey) === "true";
-      const isMassageChecked = localStorage.getItem(massageKey) === "true";
-
-      let html = `
-        <div class="card">
-          <div class="card-title">
-            <span>${data.name}</span>
-            <span class="tag">${data.tag}</span>
-          </div>
-
-          ${data.type === "c25k" ? `
-          <div class="checklist-item">
-            <input type="checkbox" id="c25kCheck" ${isC25kChecked ? "checked" : ""} onchange="saveCheck('${c25kKey}', this.checked)">
-            <label for="c25kCheck"><b>C25K Treadmill Session</b> (1.0% Incline • Week ${currentWeek})</label>
-          </div>
-          <div class="checklist-item">
-            <input type="checkbox" id="walkCheck" ${isWalkChecked ? "checked" : ""} onchange="saveCheck('${walkKey}', this.checked)">
-            <label for="walkCheck">30-Minute Daily Walk</label>
-          </div>
-          ` : ''}
-
-          ${data.type === "workout" ? `
-          <div class="checklist-item">
-            <input type="checkbox" id="jacksCheck" ${isJacksChecked ? "checked" : ""} onchange="saveCheck('${jacksKey}', this.checked)">
-            <label for="jacksCheck">100 Jumping Jacks</label>
-          </div>
-          ` : ''}
-
-          <div class="checklist-item">
-            <input type="checkbox" id="postureCheck" ${isPostureChecked ? "checked" : ""} onchange="saveCheck('${postureKey}', this.checked)">
-            <label for="postureCheck">Posture Routine <a class="ext-link" href="https://www.youtube.com/watch?v=XWQvmh_INTQ" target="_blank">YouTube ↗</a></label>
-          </div>
-
-          <div class="checklist-item">
-            <input type="checkbox" id="invCheck" ${isInvChecked ? "checked" : ""} onchange="saveCheck('${invKey}', this.checked)">
-            <label for="invCheck">Inversion Table Decompression (3-5 mins)</label>
-          </div>
-
-          <div class="checklist-item">
-            <input type="checkbox" id="massageCheck" ${isMassageChecked ? "checked" : ""} onchange="saveCheck('${massageKey}', this.checked)">
-            <label for="massageCheck">15-Minute Massage Chair Session</label>
-          </div>
-        </div>
-      `;
-
-      if (data.moves.length > 0) {
-        html += `<div class="card"><div class="card-title">Circuit Exercises</div>`;
-        data.moves.forEach((move, mIdx) => {
-          html += `
-            <div class="exercise-block">
-              <div class="exercise-header">
-                <span>${move.name}</span>
-                <span class="target-hint">${move.target}</span>
-              </div>
-              <div class="sets-grid">
-          `;
-          for (let setNum = 1; setNum <= 3; setNum++) {
-            const setKey = getKey(`m${mIdx}_s${setNum}`);
-            const val = localStorage.getItem(setKey) || "0";
-            
-            const max = move.max || 30;
-            const step = move.step || 1;
-
-            let optionsHtml = `<option value="0" ${val === "0" ? "selected" : ""}>-</option>`;
-            for (let i = step; i <= max; i += step) {
-              optionsHtml += `<option value="${i}" ${val == i ? "selected" : ""}>${i}</option>`;
-            }
-
-            html += `
-              <div class
+    })();
+  </script>
+</body>
+</html>
