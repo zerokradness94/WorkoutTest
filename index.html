@@ -32,14 +32,16 @@
     .btn-guide { background: rgba(56, 189, 248, 0.15) !important; color: var(--accent) !important; border: 1px solid var(--accent) !important; min-width: 110px !important; }
 
     .nav-days { display: flex; gap: 0.35rem; margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 0.5rem; }
-    .nav-days button { flex: 1; min-width: 45px; padding: 0.5rem 0.25rem; background: var(--card-bg); border: 1px solid var(--border); color: var(--text); border-radius: 6px; cursor: pointer; font-size: 0.8rem; text-align: center; }
+    .nav-days button { flex: 1; min-width: 45px; padding: 0.5rem 0.25rem; background: var(--card-bg); border: 1px solid var(--border); color: var(--text); border-radius: 6px; cursor: pointer; font-size: 0.8rem; text-align: center; position: relative; }
     .nav-days button.active { border-color: var(--accent); color: var(--accent); font-weight: bold; }
     .nav-days button.today-marker { border-bottom: 3px solid var(--success); }
+    .day-dot { display: block; font-size: 0.65rem; margin-top: 2px; opacity: 0.85; }
 
     .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
-    .card-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 0.25rem; display: flex; justify-content: space-between; align-items: center; }
-    .tag { font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: 4px; background: var(--border); color: var(--accent); }
+    .card-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .tag { font-size: 0.75rem; padding: 0.2rem 0.55rem; border-radius: 4px; background: rgba(56, 189, 248, 0.15); color: var(--accent); border: 1px solid rgba(56, 189, 248, 0.3); }
 
+    /* Checklist & Sets */
     .checklist-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
     .checklist-item:last-child { border-bottom: none; }
     .checklist-item input[type="checkbox"] { width: 1.3rem; height: 1.3rem; accent-color: var(--accent); cursor: pointer; }
@@ -70,16 +72,6 @@
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; padding: 1rem; overflow-y: auto; }
     .modal-content { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; max-width: 550px; margin: 1rem auto; position: relative; }
     .modal-close { position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
-    
-    /* Effort Explanation Box */
-    .effort-box { background: var(--bg); border: 1px solid var(--accent); border-radius: 10px; padding: 1rem; margin-bottom: 1.5rem; }
-    .effort-box h3 { color: var(--accent); font-size: 1.05rem; margin-bottom: 0.5rem; }
-    .effort-level { margin-bottom: 0.75rem; font-size: 0.85rem; line-height: 1.4; }
-    .effort-level:last-child { margin-bottom: 0; }
-    .effort-badge { display: inline-block; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: bold; font-size: 0.75rem; margin-right: 0.3rem; }
-    .badge-high { background: #ef4444; color: #fff; }
-    .badge-med { background: var(--warning); color: #000; }
-    .badge-light { background: var(--success); color: #000; }
 
     .guide-item { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
     .guide-item:last-child { border-bottom: none; margin-bottom: 0; }
@@ -99,7 +91,7 @@
 
   <header>
     <h1>Daily Workout Routine Tracker</h1>
-    <p class="subtitle">30-Min Daily Circuit + Walk + Recovery</p>
+    <p class="subtitle">4-Day Strength Split • 3-Day C25K • Daily Recovery</p>
     <div class="date-badge" id="dateBadge">Today: Loading...</div>
   </header>
 
@@ -133,7 +125,7 @@
     <div class="modal-content" style="text-align: center; max-width: 400px; margin-top: 30vh;">
       <h3 style="color: #ef4444; margin-bottom: 0.5rem; font-size: 1.2rem;">⚠️ Reset All Progress?</h3>
       <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.4;">
-        This will permanently clear all tracked sets, reps, and checklist items across all 4 weeks.
+        This will permanently clear all tracked sets and checklist items across all 4 weeks.
       </p>
       <div class="reset-modal-btns">
         <button class="btn-cancel" onclick="closeResetModal()">Cancel</button>
@@ -142,36 +134,14 @@
     </div>
   </div>
 
-  <!-- Exercise & Effort Guide Modal -->
+  <!-- Exercise Form Guide Modal -->
   <div class="modal-overlay" id="guideModal">
     <div class="modal-content">
-      <button class="modal-close" onclick="toggleModal(false)">&times;</button>
-      <h2 style="color: var(--accent); margin-bottom: 1rem;">Routine & Form Guide</h2>
+      <button class="modal-close" onclick="toggleModal(false)">×</button>
+      <h2 style="color: var(--accent); margin-bottom: 1rem;">Exercise Form Guides</h2>
 
-      <!-- Effort Breakdown Box -->
-      <div class="effort-box">
-        <h3>💡 Understanding Effort Levels (RIR)</h3>
-        <div class="effort-level">
-          <span class="effort-badge badge-high">HIGH EFFORT</span> <b>(1 RIR — Mon/Tue/Thu/Fri)</b><br>
-          <span style="color: var(--text-muted);">Stop <b>1 rep short of failure</b>. The final rep should feel slow, heavy, and intense, but done with clean form. Forces strength & muscle growth.</span>
-        </div>
-        <div class="effort-level">
-          <span class="effort-badge badge-med">MEDIUM EFFORT</span> <b>(3–4 RIR — Wed)</b><br>
-          <span style="color: var(--text-muted);">Stop with <b>3 to 4 easy reps left in the tank</b>. Smooth, controlled speed. Focuses on mind-muscle squeeze, blood flow, and joint recovery.</span>
-        </div>
-        <div class="effort-level">
-          <span class="effort-badge badge-light">LIGHT EFFORT</span> <b>(5+ RIR — Sat)</b><br>
-          <span style="color: var(--text-muted);">Very easy bodyweight movement. Keeps your daily habit active without accumulating any muscular or central nervous system fatigue.</span>
-        </div>
-      </div>
-
-      <h3 style="color: var(--accent); margin-bottom: 0.75rem;">Exercise Form Guides</h3>
-
-      <!-- Pull Ups -->
       <div class="guide-item">
-        <div class="guide-header-row">
-          <div class="guide-title">1. Pull-Ups / Chin-Ups</div>
-        </div>
+        <div class="guide-header-row"><div class="guide-title">1. Pull-Ups / Chin-Ups</div></div>
         <div class="guide-desc"><b>Target:</b> Lats & Biceps. Drive your elbows down toward your hips. Overhand grip hits upper back; underhand grip (chin-ups) hits biceps more.</div>
         <div class="guide-svg">
           <svg viewBox="0 0 200 120" width="100%" height="120">
@@ -189,11 +159,8 @@
         </div>
       </div>
 
-      <!-- Dips -->
       <div class="guide-item">
-        <div class="guide-header-row">
-          <div class="guide-title">2. Chest Dips</div>
-        </div>
+        <div class="guide-header-row"><div class="guide-title">2. Chest Dips</div></div>
         <div class="guide-desc"><b>Target:</b> Lower Chest & Triceps. Lean slightly forward (~20°) to target chest. Lower until upper arms are parallel to the floor (90° bend).</div>
         <div class="guide-svg">
           <svg viewBox="0 0 200 120" width="100%" height="120">
@@ -211,11 +178,8 @@
         </div>
       </div>
 
-      <!-- Deficit Push Ups -->
       <div class="guide-item">
-        <div class="guide-header-row">
-          <div class="guide-title">3. Deficit Push-Ups</div>
-        </div>
+        <div class="guide-header-row"><div class="guide-title">3. Deficit Push-Ups</div></div>
         <div class="guide-desc"><b>Target:</b> Mid Chest & Core. Use push-up handles to elevate hands. Lower down until chest dips below handle level for a deeper chest stretch.</div>
         <div class="guide-svg">
           <svg viewBox="0 0 200 120" width="100%" height="120">
@@ -231,11 +195,8 @@
         </div>
       </div>
 
-      <!-- Lateral Raises -->
       <div class="guide-item">
-        <div class="guide-header-row">
-          <div class="guide-title">4. DB Lateral Raises</div>
-        </div>
+        <div class="guide-header-row"><div class="guide-title">4. DB Lateral Raises</div></div>
         <div class="guide-desc"><b>Target:</b> Side Shoulders (Width). Raise 8 lb dumbbells outward with elbows slightly bent. Take 3 seconds to lower for maximum burn.</div>
         <div class="guide-svg">
           <svg viewBox="0 0 200 120" width="100%" height="120">
@@ -253,11 +214,8 @@
         </div>
       </div>
 
-      <!-- Rear Delt Flyes -->
       <div class="guide-item">
-        <div class="guide-header-row">
-          <div class="guide-title">5. DB Rear Delt Flyes</div>
-        </div>
+        <div class="guide-header-row"><div class="guide-title">5. DB Rear Delt Flyes</div></div>
         <div class="guide-desc"><b>Target:</b> Rear Shoulders & Upper Back. Hinge forward at the hips. Raise 8 lb dumbbells wide to the sides, driving with your back elbows to fix posture.</div>
         <div class="guide-svg">
           <svg viewBox="0 0 200 120" width="100%" height="120">
@@ -274,11 +232,8 @@
         </div>
       </div>
 
-      <!-- Hanging Leg Raises -->
       <div class="guide-item">
-        <div class="guide-header-row">
-          <div class="guide-title">6. Hanging Leg Raises</div>
-        </div>
+        <div class="guide-header-row"><div class="guide-title">6. Hanging Leg Raises</div></div>
         <div class="guide-desc"><b>Target:</b> Lower Abs & Core. Hang from pull-up bar. Lift knees or legs upward smoothly without swinging. Tilt pelvis at top to contract abs.</div>
         <div class="guide-svg">
           <svg viewBox="0 0 200 120" width="100%" height="120">
@@ -295,11 +250,8 @@
         </div>
       </div>
 
-      <!-- Plank Hold -->
       <div class="guide-item">
-        <div class="guide-header-row">
-          <div class="guide-title">7. Plank Hold</div>
-        </div>
+        <div class="guide-header-row"><div class="guide-title">7. Plank Hold</div></div>
         <div class="guide-desc"><b>Target:</b> Full Core Stability. Rest on forearms and toes. Keep your body in a straight line from ears to ankles. Squeeze glutes and belly button.</div>
         <div class="guide-svg">
           <svg viewBox="0 0 200 120" width="100%" height="120">
@@ -311,47 +263,71 @@
           </svg>
         </div>
       </div>
-
     </div>
   </div>
 
   <script>
     const workoutData = {
-      Mon: { name: "Dip Focus", effort: "High Effort (1 RIR)", moves: [
-        { name: "Pull-Ups (Banded)", target: "Aim for 5–8 reps", max: 30 },
-        { name: "Dips (Banded)", target: "Aim for 5–8 reps", max: 30 },
-        { name: "DB Lateral Raises (8 lb)", target: "Aim for 15–25 reps", max: 30 },
-        { name: "Hanging Leg Raises", target: "Aim for 8–12 reps", max: 30 }
-      ]},
-      Tue: { name: "Push-Up Focus", effort: "High Effort (1 RIR)", moves: [
-        { name: "Chin-Ups (Banded)", target: "Aim for 5–8 reps", max: 30 },
-        { name: "Deficit Push-Ups", target: "Aim for 8–15 reps", max: 30 },
-        { name: "DB Rear Delt Flyes (8 lb)", target: "Aim for 15–25 reps", max: 30 },
-        { name: "Plank Hold", target: "Aim for 45–60 secs", max: 90, step: 5 }
-      ]},
-      Wed: { name: "Form & Squeeze", effort: "Medium Effort", moves: [
-        { name: "Pull-Ups (Banded)", target: "Aim for 5–8 smooth reps", max: 30 },
-        { name: "Deficit Push-Ups", target: "Aim for 8–12 smooth reps", max: 30 },
-        { name: "DB Lateral Raises (8 lb)", target: "Aim for 15–20 slow reps", max: 30 },
-        { name: "Hanging Leg Raises", target: "Aim for 8–10 smooth reps", max: 30 }
-      ]},
-      Thu: { name: "Dip Focus", effort: "High Effort (1 RIR)", moves: [
-        { name: "Pull-Ups (Banded)", target: "Aim for 5–8 reps", max: 30 },
-        { name: "Dips (Banded)", target: "Aim for 5–8 reps", max: 30 },
-        { name: "DB Lateral Raises (8 lb)", target: "Aim for 15–25 reps", max: 30 },
-        { name: "Hanging Leg Raises", target: "Aim for 8–12 reps", max: 30 }
-      ]},
-      Fri: { name: "Push-Up Focus", effort: "High Effort (1 RIR)", moves: [
-        { name: "Chin-Ups (Banded)", target: "Aim for 5–8 reps", max: 30 },
-        { name: "Deficit Push-Ups", target: "Aim for 8–15 reps", max: 30 },
-        { name: "DB Rear Delt Flyes (8 lb)", target: "Aim for 15–25 reps", max: 30 },
-        { name: "Plank Hold", target: "Aim for 45–60 secs", max: 90, step: 5 }
-      ]},
-      Sat: { name: "Active Light Reset", effort: "Light Effort", moves: [
-        { name: "Light Deficit Push-Ups", target: "Aim for 8–10 easy reps", max: 30 },
-        { name: "Light Banded Pull-Ups", target: "Aim for 8–10 easy reps", max: 30 }
-      ]},
-      Sun: { name: "Rest & Recovery", effort: "Rest Day", moves: [] }
+      Mon: {
+        name: "Workout 1 — Dip Focus",
+        tag: "Strength",
+        type: "workout",
+        moves: [
+          { name: "Pull-Ups (Banded)", target: "Aim for 5–8 reps", max: 30 },
+          { name: "Dips (Banded)", target: "Aim for 5–8 reps", max: 30 },
+          { name: "DB Lateral Raises (8 lb)", target: "Aim for 15–25 reps", max: 30 },
+          { name: "Hanging Leg Raises", target: "Aim for 8–12 reps", max: 30 }
+        ]
+      },
+      Tue: {
+        name: "C25K — Run 1",
+        tag: "Cardio",
+        type: "c25k",
+        moves: []
+      },
+      Wed: {
+        name: "Workout 2 — Push-Up Focus",
+        tag: "Strength",
+        type: "workout",
+        moves: [
+          { name: "Chin-Ups (Banded)", target: "Aim for 5–8 reps", max: 30 },
+          { name: "Deficit Push-Ups", target: "Aim for 8–15 reps", max: 30 },
+          { name: "DB Rear Delt Flyes (8 lb)", target: "Aim for 15–25 reps", max: 30 },
+          { name: "Plank Hold", target: "Aim for 45–60 secs", max: 90, step: 5 }
+        ]
+      },
+      Thu: {
+        name: "Workout 3 — Form & Squeeze",
+        tag: "Strength",
+        type: "workout",
+        moves: [
+          { name: "Pull-Ups (Banded)", target: "Aim for 5–8 smooth reps", max: 30 },
+          { name: "Deficit Push-Ups", target: "Aim for 8–12 smooth reps", max: 30 },
+          { name: "DB Lateral Raises (8 lb)", target: "Aim for 15–20 slow reps", max: 30 },
+          { name: "Hanging Leg Raises", target: "Aim for 8–10 smooth reps", max: 30 }
+        ]
+      },
+      Fri: {
+        name: "C25K — Run 2",
+        tag: "Cardio",
+        type: "c25k",
+        moves: []
+      },
+      Sat: {
+        name: "Workout 4 — Active Light Reset",
+        tag: "Strength",
+        type: "workout",
+        moves: [
+          { name: "Light Deficit Push-Ups", target: "Aim for 8–10 easy reps", max: 30 },
+          { name: "Light Banded Pull-Ups", target: "Aim for 8–10 easy reps", max: 30 }
+        ]
+      },
+      Sun: {
+        name: "C25K — Run 3",
+        tag: "Cardio",
+        type: "c25k",
+        moves: []
+      }
     };
 
     const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -362,7 +338,7 @@
     let todayWeek = 1;
     let todayDay = "Mon";
 
-    /* Audio Context Initialization for Mobile Audio Unlock */
+    /* Audio Context Initialization */
     let audioCtx = null;
 
     function initAudio() {
@@ -382,26 +358,22 @@
           const gain = audioCtx.createGain();
           osc.type = 'sine';
           osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-          
           gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
           gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-
           osc.connect(gain);
           gain.connect(audioCtx.destination);
-          
           osc.start();
           osc.stop(audioCtx.currentTime + duration);
         } catch(e) {}
       }, delay);
     }
 
-    /* Rest Timer Script with Mobile Audio Unlock */
+    /* Rest Timer Script */
     let timerInterval = null;
     let timeLeft = 0;
 
     function startTimer(seconds) {
-      initAudio(); // Unlock audio on user tap
-      
+      initAudio();
       clearInterval(timerInterval);
       timeLeft = seconds;
       updateTimerDisplay();
@@ -411,11 +383,9 @@
         if (timeLeft <= 0) {
           clearInterval(timerInterval);
           document.getElementById("timerDisplay").innerText = "TIME UP! 🎉";
-          
-          // Sound Alert: 3 Crisp Beeps
-          playBeep(880, 0.15, 0);   // Beep 1
-          playBeep(880, 0.15, 200); // Beep 2
-          playBeep(1200, 0.4, 400);  // High Beep 3
+          playBeep(880, 0.15, 0);
+          playBeep(880, 0.15, 200);
+          playBeep(1200, 0.4, 400);
         } else {
           updateTimerDisplay();
         }
@@ -436,7 +406,6 @@
     function autoDetectDate() {
       const now = new Date();
       todayDay = jsDayMap[now.getDay()];
-      
       const dayOfMonth = now.getDate();
       todayWeek = Math.min(Math.ceil(dayOfMonth / 7), 4);
 
@@ -459,112 +428,49 @@
       container.innerHTML = "";
       for (let i = 1; i <= 4; i++) {
         const btn = document.createElement("button");
-        btn.innerText = `Week ${i}`;
-        if (i === currentWeek) btn.classList.add("active");
-        btn.onclick = () => { currentWeek = i; renderWeekNav(); renderWorkout(); };
-        container.appendChild(btn);
-      }
-      
-      const guideBtn = document.createElement("button");
-      guideBtn.innerText = "Exercise Guide 📖";
-      guideBtn.className = "btn-guide";
-      guideBtn.onclick = () => toggleModal(true);
-      container.appendChild(guideBtn);
-    }
-
-    function toggleModal(show) {
-      document.getElementById("guideModal").style.display = show ? "block" : "none";
-    }
-
-    function openResetModal() {
-      document.getElementById("resetModal").style.display = "block";
-    }
-
-    function closeResetModal() {
-      document.getElementById("resetModal").style.display = "none";
-    }
-
-    function executeReset() {
-      document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-      document.querySelectorAll('select').forEach(sel => sel.value = "0");
-
-      days.forEach(d => {
-        for (let w = 1; w <= 4; w++) {
-          ['walk', 'jacks', 'jump', 'posture', 'inversion', 'massage'].forEach(item => {
-            try { localStorage.removeItem(`w${w}_${d}_${item}`); } catch(e) {}
-          });
-          for (let m = 0; m < 4; m++) {
-            for (let s = 1; s <= 3; s++) {
-              try { localStorage.removeItem(`w${w}_${d}_m${m}_s${s}`); } catch(e) {}
-            }
-          }
-        }
-      });
-
-      try { localStorage.clear(); } catch(e) {}
-
-      closeResetModal();
-      renderWorkout();
-    }
-
-    function renderDayNav() {
-      const container = document.getElementById("dayNav");
-      container.innerHTML = "";
-      days.forEach(day => {
-        const btn = document.createElement("button");
-        btn.innerText = day;
-        if (day === currentDay) btn.classList.add("active");
-        if (day === todayDay && currentWeek === todayWeek) btn.classList.add("today-marker");
-        btn.onclick = () => { currentDay = day; renderDayNav(); renderWorkout(); };
-        container.appendChild(btn);
-      });
-    }
-
-    function getKey(suffix) {
-      return `w${currentWeek}_${currentDay}_${suffix}`;
+        btn.innerText = `Week ${i}`; if (i === currentWeek) btn.classList.add("active"); btn.onclick = () => { currentWeek = i; renderWeekNav(); renderDayNav(); renderWorkout(); }; container.appendChild(btn); }  const guideBtn = document.createElement("button"); guideBtn.innerText = "Exercise Guide 📖"; guideBtn.className = "btn-guide"; guideBtn.onclick = () => toggleModal(true); container.appendChild(guideBtn); }  function toggleModal(show) { document.getElementById("guideModal").style.display = show ? "block" : "none"; }  function openResetModal() { document.getElementById("resetModal").style.display = "block"; }  function closeResetModal() { document.getElementById("resetModal").style.display = "none"; }  function executeReset() { try { localStorage.clear(); } catch(e) {} closeResetModal(); renderDayNav(); renderWorkout(); }  function renderDayNav() { const container = document.getElementById("dayNav"); container.innerHTML = ""; days.forEach(day => { const btn = document.createElement("button"); const dayInfo = workoutData[day]; const badge = dayInfo.type === "c25k" ? "🏃" : "💪";  btn.innerHTML = `${day}<span class="day-dot">${badge}</span>`; if (day === currentDay) btn.classList.add("active"); if (day === todayDay && currentWeek === todayWeek) btn.classList.add("today-marker"); btn.onclick = () => { currentDay = day; renderDayNav(); renderWorkout(); }; container.appendChild(btn); }); }  function getKey(suffix) { return `w${currentWeek}_${currentDay}_${suffix}`;
     }
 
     function renderWorkout() {
       const container = document.getElementById("workoutContent");
       const data = workoutData[currentDay];
-      
+
+      const c25kKey = getKey("c25k");
       const walkKey = getKey("walk");
       const jacksKey = getKey("jacks");
-      const jumpKey = getKey("jump");
       const postureKey = getKey("posture");
       const invKey = getKey("inversion");
       const massageKey = getKey("massage");
 
+      const isC25kChecked = localStorage.getItem(c25kKey) === "true";
       const isWalkChecked = localStorage.getItem(walkKey) === "true";
       const isJacksChecked = localStorage.getItem(jacksKey) === "true";
-      const isJumpChecked = localStorage.getItem(jumpKey) === "true";
       const isPostureChecked = localStorage.getItem(postureKey) === "true";
       const isInvChecked = localStorage.getItem(invKey) === "true";
       const isMassageChecked = localStorage.getItem(massageKey) === "true";
-
-      const showJumpTraining = (currentDay === "Tue" || currentDay === "Sat");
 
       let html = `
         <div class="card">
           <div class="card-title">
             <span>${data.name}</span>
-            <span class="tag">${data.effort}</span>
+            <span class="tag">${data.tag}</span>
           </div>
-          
+
+          ${data.type === "c25k" ? `
+          <div class="checklist-item">
+            <input type="checkbox" id="c25kCheck" ${isC25kChecked ? "checked" : ""} onchange="saveCheck('${c25kKey}', this.checked)">
+            <label for="c25kCheck"><b>C25K Treadmill Session</b> (1.0% Incline • Week ${currentWeek})</label>
+          </div>
           <div class="checklist-item">
             <input type="checkbox" id="walkCheck" ${isWalkChecked ? "checked" : ""} onchange="saveCheck('${walkKey}', this.checked)">
             <label for="walkCheck">30-Minute Daily Walk</label>
           </div>
+          ` : ''}
 
+          ${data.type === "workout" ? `
           <div class="checklist-item">
             <input type="checkbox" id="jacksCheck" ${isJacksChecked ? "checked" : ""} onchange="saveCheck('${jacksKey}', this.checked)">
             <label for="jacksCheck">100 Jumping Jacks</label>
-          </div>
-
-          ${showJumpTraining ? `
-          <div class="checklist-item">
-            <input type="checkbox" id="jumpCheck" ${isJumpChecked ? "checked" : ""} onchange="saveCheck('${jumpKey}', this.checked)">
-            <label for="jumpCheck">Jump Training <a class="ext-link" href="https://www.youtube.com/watch?v=VQCZBadw0nI" target="_blank">YouTube ↗</a></label>
           </div>
           ` : ''}
 
@@ -609,31 +515,4 @@
             }
 
             html += `
-              <div class="set-box">
-                <label>SET ${setNum}</label>
-                <select onchange="saveVal('${setKey}', this.value)">
-                  ${optionsHtml}
-                </select>
-              </div>
-            `;
-          }
-          html += `</div></div>`;
-        });
-        html += `</div>`;
-      }
-
-      container.innerHTML = html;
-    }
-
-    function saveCheck(key, isChecked) {
-      try { localStorage.setItem(key, isChecked); } catch(e) {}
-    }
-
-    function saveVal(key, val) {
-      try { localStorage.setItem(key, val); } catch(e) {}
-    }
-
-    init();
-  </script>
-</body>
-</html>
+              <div class
